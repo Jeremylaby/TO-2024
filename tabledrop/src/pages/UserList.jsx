@@ -1,8 +1,7 @@
 import {useEffect, useState} from "react";
-import NavBar from "./Home/NavBar.jsx";
-import Container from "react-bootstrap/Container";
-import {Table} from "react-bootstrap";
-import UserElement from "./UserElement.jsx";
+import NavBar from "../components/NavBar";
+import {Container, Table} from "@mui/material";
+import UserElement from "../components/UserElement";
 
 const UserList = () =>{
     const [users, setUsers] = useState([]);

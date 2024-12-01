@@ -1,4 +1,4 @@
-import {Button} from "react-bootstrap";
+import {Button} from "@mui/material"
 import PropTypes from "prop-types";
 
 const UserElement = ({user, fetchUsers}) => {

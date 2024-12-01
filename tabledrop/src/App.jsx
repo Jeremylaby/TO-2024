@@ -1,7 +1,6 @@
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import "./App.css";
+import "./styles/App.css";
 import Account from "./pages/Account.jsx";
 import { AuthProvider } from "./components/AuthProvider.jsx";
 import Login from "./pages/Login.jsx";
