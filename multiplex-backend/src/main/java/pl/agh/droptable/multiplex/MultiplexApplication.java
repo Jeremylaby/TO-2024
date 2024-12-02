@@ -1,13 +1,13 @@
-package pl.edu.agh.droptable;
+package pl.agh.droptable.multiplex;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DroptableApplication {
+public class MultiplexApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DroptableApplication.class, args);
+		SpringApplication.run(MultiplexApplication.class, args);
 	}
 
 }
