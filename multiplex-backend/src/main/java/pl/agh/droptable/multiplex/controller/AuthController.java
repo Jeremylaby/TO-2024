@@ -63,10 +63,13 @@ public class AuthController {
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
+            User user = userRepository.findByEmail(request.getEmail()).orElse(null);
             Map<String, String> response = new HashMap<>();
             response.put("message", "Login successful!");
-
+            response.put("id", String.valueOf(user.getId()));
+            response.put("firstName", user.getFirstName());
+            response.put("lastName", user.getLastName());
+            response.put("email", user.getEmail());
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             Map<String, String> errorResponse = new HashMap<>();

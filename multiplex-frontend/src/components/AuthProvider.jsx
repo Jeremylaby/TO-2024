@@ -19,7 +19,12 @@ export const AuthProvider = ({ children }) => {
   
       if (response.ok) {
         const userData = await response.json();
-        setUser(userData);
+        setUser({
+          id: userData.id,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          email: userData.email,
+        } );
         console.log("Pomyślnie zalogowano!");
         return true;
       } else {
