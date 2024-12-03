@@ -1,7 +1,8 @@
 import {useEffect, useState} from "react";
 import NavBar from "../components/NavBar";
-import {Container, Table} from "@mui/material";
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Paper } from "@mui/material";
 import UserElement from "../components/UserElement";
+import Typography from "@mui/material/Typography";
 
 const UserList = () =>{
     const [users, setUsers] = useState([]);
@@ -33,28 +34,32 @@ const UserList = () =>{
     if(loading) return(<h1>Loading...</h1>)
     if(error) return(<h1>Error: {error}</h1>)
     return (
-        <div>
-            <NavBar/>
-            <Container fluid >
-
-                <h3 className="mt-4">Users</h3>
-                <Table className="mt-4">
-                    <thead>
-                    <tr>
-                        <th width="5%">id</th>
-                        <th width="20%">FirstName</th>
-                        <th width="20%">LastName</th>
-                        <th width="20%">email</th>
-                        <th width="20%">role</th>
-                        <th width="25%"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {users.map( user => <UserElement user={user} fetchUsers={fetchUsers} key={user.id}/>)}
-                    </tbody>
-                </Table>
-            </Container>
-        </div>
+        <Box>
+            <NavBar />
+            <Box sx={{ padding: 2 }}>
+                <Typography variant="h4" sx={{ marginBottom: 2 }}>
+                    Users
+                </Typography>
+                <TableContainer component={Paper}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell sx={{ width: "5%" }}>ID</TableCell>
+                                <TableCell sx={{ width: "20%" }}>First Name</TableCell>
+                                <TableCell sx={{ width: "20%" }}>Last Name</TableCell>
+                                <TableCell sx={{ width: "20%" }}>Email</TableCell>
+                                <TableCell sx={{ width: "15%" }}></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {users.map((user) => (
+                                <UserElement user={user} fetchUsers={fetchUsers} key={user.id} />
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+        </Box>
     )
 };
 export default UserList
