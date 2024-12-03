@@ -150,31 +150,13 @@ Aktualizuje dane istniejącego użytkownika lub dodaje nowego użytkownika do sy
 #### **Usunięcie użytkownika**
 
 **Endpoint:**  
-`DELETE /user`
+`DELETE /user/{id}`
 
 **Opis:**  
-Usuwa istniejącego użytkownika z systemu na podstawie adresu e-mail.
-
-**Treść żądania (`Request Body`):**
-
-| Nazwa pola | Typ    | Walidacja                                 | Opis                      |
-| ---------- | ------ | ----------------------------------------- | ------------------------- | --- |
-| `email`    | String | Email przypisany użytkownikowi, Nie pusty | Adres e-mail użytkownika. |     |
-
+Usuwa istniejącego użytkownika z systemu na podstawie id.
 **Odpowiedź:**
 
-- **Status 200 OK:** Użytkownik został usunięty z systemu. Zwracane są dane usuniętego użytkownika.  
-  Przykład odpowiedzi:
-
-  ```json
-  {
-    "id": 1,
-    "firstName": "Adam",
-    "lastName": "Nowak",
-    "email": "adam.nowak@example.com",
-    "password": "encodedPasswordHere"
-  }
-  ```
+- **Status 200 OK:** Użytkownik został usunięty z systemu.
 
 - **Status 404 Not Found:** Użytkownik o podanym adresie e-mail nie istnieje w systemie.  
   Przykład odpowiedzi:
