@@ -1,6 +1,5 @@
 import {
     Box,
-
     Card,
     CardContent,
     Grid2,
@@ -16,27 +15,23 @@ import NavBar from "../components/NavBar.jsx";
 import {useAuth} from "../components/AuthProvider.jsx";
 const Account = () => {
     const {user, logout} = useAuth()
-    const removeUser = async (email) => {
-        await fetch(`api/user`, {
+    const remove = async (user) => {
+        await fetch(`/api/user/${user.id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
             },
             credentials: "include",
-            body: JSON.stringify({email})
         })
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error("Failed to delete user");
+                    throw new Error("Failed to delete user ");
                 }
             })
             .catch((error) => {
                 console.error("Error while deleting user:", error);
-            })
-            .finally(() => {
-                logout();
-            });
-    }
+            }).finally(logout());
+    };
     return (
         <div className={"d-flex flex-column "}>
             <NavBar/>
@@ -171,7 +166,7 @@ const Account = () => {
                                 }}>
                                     <Typography variant="h5" fontWeight="bold">Delete Account</Typography>
                                     <Button variant="contained" color="error"
-                                            onClick={() => removeUser(user?.email)}>
+                                            onClick={() => remove(user)}>
                                         Delete
                                     </Button>
                                 </Box>
