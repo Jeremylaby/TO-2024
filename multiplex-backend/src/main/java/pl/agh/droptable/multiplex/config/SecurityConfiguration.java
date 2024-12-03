@@ -35,7 +35,12 @@ public class SecurityConfiguration {
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .formLogin(formLogin -> formLogin
+                        .defaultSuccessUrl("/account", true)
+                        .permitAll()
+                )
                 .httpBasic(withDefaults());
+
         return http.build();
     }
     @Bean
