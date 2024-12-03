@@ -22,7 +22,7 @@ const SignUpFooter = () => (
   <Typography sx={{ textAlign: "center" }}>
     Already have an account?{" "}
     <Link
-      href="/material-ui/getting-started/templates/login/"
+      href="/login"
       variant="body2"
       sx={{ alignSelf: "center" }}
     >
