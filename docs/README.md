@@ -165,3 +165,65 @@ Usuwa istniejącego użytkownika z systemu na podstawie id.
     "error": "User with email adam.nowak@example.com not found."
   }
   ```
+
+## Diagram Przepływu Logowania i Rejestracji
+
+W celu lepszego zrozumienia, jak działa proces rejestracji i autoryzacji użytkowników w systemie, przedstawiamy diagram przepływu tego procesu. Diagram ilustruje kroki, które zachodzą od momentu wprowadzenia danych przez użytkownika, aż po ich zapis w bazie danych lub uwierzytelnienie użytkownika w systemie.
+
+---
+
+![auth-flow](img/auth_flow_diagram.jpg)
+
+### **Opis przebiegu rejestracji użytkownika**
+
+1. **Użytkownik wprowadza dane:**  
+   Użytkownik wypełnia formularz rejestracji, podając swoje dane, takie jak imię, nazwisko, e-mail i hasło.
+
+2. **Przesłanie żądania:**  
+   Dane są przesyłane za pomocą żądania `POST /auth/register` do kontrolera `AuthController`.
+
+3. **Walidacja danych:**  
+   `AuthController` sprawdza poprawność wprowadzonych danych. Weryfikuje, czy:
+   - Wszystkie pola są poprawnie wypełnione.
+   - Podany e-mail nie istnieje już w systemie.
+
+4. **Szyfrowanie hasła:**  
+   Jeśli dane są poprawne, hasło użytkownika jest szyfrowane przy użyciu `PasswordEncoder`, który jest dostarczany przez Spring Security. Szyfrowanie hasła zapewnia, że nawet jeśli dane zostaną przechwycone lub baza danych zostanie naruszona, hasła użytkowników pozostaną bezpieczne.
+
+5. **Zapis w bazie danych:**  
+   Tworzony jest nowy obiekt użytkownika, który następnie zostaje zapisany w bazie danych przy użyciu `UserRepository`.
+
+6. **Odpowiedź do użytkownika:**  
+   Po pomyślnym zapisaniu danych serwer zwraca odpowiedź potwierdzającą rejestrację. W przypadku błędu (np. istniejącego e-maila), użytkownik otrzymuje odpowiednią wiadomość zwrotną.
+
+---
+
+### **Opis przebiegu logowania użytkownika**
+
+1. **Użytkownik wprowadza dane:**  
+   Użytkownik wypełnia formularz logowania, podając swoje dane uwierzytelniające, takie jak e-mail i hasło.
+
+2. **Przesłanie żądania:**  
+   Dane są przesyłane za pomocą żądania `POST /auth/login` do kontrolera `AuthController`.
+
+3. **Walidacja danych:**  
+   `AuthController` przekazuje dane do `AuthenticationManager`, który jest konfigurowany w ramach Spring Security. `AuthenticationManager`:
+   - Korzysta z `CustomUserDetailsService` do ładowania szczegółów użytkownika z bazy danych.
+   - Sprawdza, czy użytkownik z podanym e-mailem istnieje.
+   - Porównuje zaszyfrowane hasło wprowadzone przez użytkownika z hasłem przechowywanym w bazie danych przy użyciu mechanizmu Spring Security.
+
+4. **Uwierzytelnienie:**  
+   Jeśli dane logowania są poprawne, użytkownik zostaje uwierzytelniony i Spring Security tworzy dla niego sesję.
+
+5. **Odpowiedź do użytkownika:** 
+   Po pomyślnym uwierzytelnieniu serwer zwraca odpowiedź potwierdzającą logowanie. W przypadku błędu (np. błędne hasło lub e-mail), użytkownik otrzymuje komunikat zwrotny.
+
+---
+
+### **Rola Spring Security w procesach rejestracji i logowania**
+- **Szyfrowanie haseł:** Dzięki `PasswordEncoder` hasła są przechowywane w bezpieczny sposób.
+- **Walidacja danych uwierzytelniających:** `AuthenticationManager` i `CustomUserDetailsService` umożliwiają weryfikację użytkowników i ich haseł.
+- **Ochrona punktów końcowych:** Spring Security zapewnia kontrolę dostępu do endpointów, umożliwiając dostęp do wybranych zasobów tylko po zalogowaniu.
+- **Bezpieczeństwo aplikacji:** Oferuje gotowe mechanizmy ochrony przed popularnymi atakami, takimi jak CSRF czy brute force.
+
+---
