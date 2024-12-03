@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import "./styles/App.css";
+import Account from "./pages/Account.jsx";
+import { AuthProvider } from "./components/AuthProvider.jsx";
+import Login from "./pages/Login.jsx";
+import ProtectedRouter from "./components/ProtectedRoute.jsx";
+import SignUp from "./pages/SignUp.jsx";
+import Unauthorized from "./pages/Unauthorized.jsx";
+import UserList from "./pages/UserList.jsx";
+import Home from "./pages/Home.jsx";
+const roles = {
+  ADMIN: 2,
+  WORKER: 1,
+  USER: 0,
+};
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path={"/"} element={<Home />} />
+          <Route path={"/login"} element={<Login />} />
+          <Route path={"/signup"} element={<SignUp />} />
+          <Route path={"/account"} element={<Account />} />
+          <Route
+            path={"/admin/users"}
+            element={
+              <ProtectedRouter allowedRoles={[roles.ADMIN]}>
+                <UserList />
+              </ProtectedRouter>
+            }
+          />
+
+          <Route path={"/unauthorized"} element={<Unauthorized />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;

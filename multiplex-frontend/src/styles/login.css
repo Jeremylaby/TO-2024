@@ -1,0 +1,4 @@
+.login-block {
+    flex-direction: column;
+    gap: 4px;
+}
