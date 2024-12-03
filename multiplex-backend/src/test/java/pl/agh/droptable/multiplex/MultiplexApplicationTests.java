@@ -1,10 +1,10 @@
-package pl.edu.agh.droptable;
+package pl.agh.droptable.multiplex;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DroptableApplicationTests {
+class MultiplexApplicationTests {
 
 	@Test
 	void contextLoads() {
