@@ -1,12 +1,26 @@
 package pl.agh.droptable.multiplex.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
+import pl.agh.droptable.multiplex.dto.LoginRequest;
 import pl.agh.droptable.multiplex.dto.RegistrationRequest;
 import pl.agh.droptable.multiplex.model.User;
 import pl.agh.droptable.multiplex.repository.UserRepository;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -20,10 +34,15 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @PostMapping("/register")
-    public String registerUser(@Valid @RequestBody RegistrationRequest request) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            return "User with this email already exists.";
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "User with this email already exists.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
 
         User user = new User();
@@ -33,6 +52,31 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(user);
-        return "Registration successful!";
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Registration successful!");
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest request) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Login successful!");
+
+            return ResponseEntity.ok(response);
+        } catch (AuthenticationException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Invalid credentials.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
     }
 }
