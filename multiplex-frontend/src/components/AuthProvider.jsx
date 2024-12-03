@@ -5,23 +5,58 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  useEffect(() => {
-    console.log({ user });
-  }, [user]);
 
   const login = async (email, password) => {
-    //TODO
+    try {
+      const response = await fetch("/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+        console.log("Pomyślnie zalogowano!");
+        return true;
+      } else {
+        const errorText = await response.text();
+        console.log("Błąd logowania:", errorText);
+        return false;
+      }
+    } catch (error) {
+      console.log("Wystąpił błąd podczas logowania:", error);
+      return false;
+    }
   };
+  
 
-  const signUp = async (
-    firstNames,
-    lastName,
-    email,
-    password,
-    permissionLevel
-  ) => {
-    //to nie wiem czy tak zrobimy
-    //TODO
+  const signUp = async (firstName, lastName, email, password) => {
+    try {
+      const response = await fetch("/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ firstName, lastName, email, password }),
+      });
+  
+      if (response.ok) {
+        const loginSuccess = await login(email, password);
+        return loginSuccess;
+      } else {
+        const errorText = await response.text();
+        console.error("Błąd rejestracji:", errorText);
+        return false;
+      }
+    } catch (error) {
+      console.error("Wystąpił błąd podczas rejestracji:", error);
+      return false;
+    }
   };
 
   const logout = async () => {
@@ -31,16 +66,16 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = async () => {
     //TODO
   };
-  useEffect(() => {
-    checkAuth();
-  }, []);
+
   return (
     <AuthContext.Provider value={{ user, login, signUp, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
 export const useAuth = () => useContext(AuthContext);

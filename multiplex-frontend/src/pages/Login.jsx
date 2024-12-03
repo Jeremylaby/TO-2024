@@ -6,6 +6,8 @@ import { useState } from "react";
 import AuthWrapper from "../components/AuthForm/AuthWrapper";
 import EmailInput from "../components/AuthForm/EmailInput";
 import PasswordInput from "../components/AuthForm/PasswordInput";
+import { useAuth } from "../components/AuthProvider";
+import { useNavigate } from 'react-router-dom';
 import {
   isEmailValid,
   isPasswordValid,
@@ -29,17 +31,30 @@ const Login = () => {
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
   const [isPasswordError, setIsPasswordError] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  const handleSubmit = (event) => {
     if (isEmailError || isPasswordError) {
-      event.preventDefault();
       return;
     }
+
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+
+    const email = data.get("email");
+    const password = data.get("password");
+
+    const success = await login(email, password);
+
+    if (success) {
+      navigate('/account');    
+      console.log("Logowanie zakończone sukcesem");
+    } else {
+      navigate('/login', { state: { error: 'Logowanie nie powiodło się. Spróbuj ponownie.' } });
+      console.log("Błąd podczas logowania");
+    }
   };
 
   const validateInputs = () => {

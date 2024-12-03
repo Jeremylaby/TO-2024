@@ -9,6 +9,9 @@ import { useState } from "react";
 import AuthWrapper from "../components/AuthForm/AuthWrapper";
 import EmailInput from "../components/AuthForm/EmailInput";
 import PasswordInput from "../components/AuthForm/PasswordInput";
+import { useAuth } from "../components/AuthProvider";
+import { useNavigate } from 'react-router-dom';
+
 import {
   isConfirmPasswordValid,
   isEmailValid,
@@ -36,18 +39,32 @@ const SignUp = () => {
   const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false);
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] =
     useState("");
+  const { signUp } = useAuth();
+  const navigate = useNavigate();
+  
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  const handleSubmit = (event) => {
     if (isEmailError || isPasswordError || isConfirmPasswordError) {
-      event.preventDefault();
       return;
     }
+
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-      confirmPAssword: data.get("confirm-password"),
-    });
+
+    const firstName = data.get("first-name");
+    const lastName = data.get("last-name");
+    const email = data.get("email");
+    const password = data.get("password");
+
+    const success = await signUp(firstName, lastName, email, password);
+
+    if (success) {
+      navigate('/account');    
+      console.log("Rejestracja zakończona sukcesem");
+    } else {
+      navigate('/signup', { state: { error: 'Rejestracja nie powiodła się. Spróbuj ponownie.' } });
+      console.log("Błąd podczas rejestracji");
+    }
   };
 
   const validateInputs = () => {
