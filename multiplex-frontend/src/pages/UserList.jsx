@@ -10,7 +10,7 @@ const UserList = () =>{
     const fetchUsers = () => {
         setError(null);
         setLoading(true);
-        return fetch('api/users', {
+        return fetch('/api/user', {
             method: 'GET',
             credentials: 'include',
             headers: {

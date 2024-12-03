@@ -53,22 +53,6 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 
 const FormFooter = ({ Footer }) => (
   <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-    <Button
-      fullWidth
-      variant="outlined"
-      onClick={() => alert("Sign in with Google")}
-      startIcon={<AdbIcon />}
-    >
-      Sign in with Google
-    </Button>
-    <Button
-      fullWidth
-      variant="outlined"
-      onClick={() => alert("Sign in with Facebook")}
-      startIcon={<AdbIcon />}
-    >
-      Sign in with Facebook
-    </Button>
     <Footer />
   </Box>
 );

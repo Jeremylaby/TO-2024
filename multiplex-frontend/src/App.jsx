@@ -26,9 +26,7 @@ function App() {
           <Route
             path={"/admin/users"}
             element={
-              <ProtectedRouter allowedRoles={[roles.ADMIN]}>
                 <UserList />
-              </ProtectedRouter>
             }
           />
 
