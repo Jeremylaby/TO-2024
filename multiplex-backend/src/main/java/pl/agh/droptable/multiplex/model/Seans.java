@@ -10,6 +10,7 @@ public class Seans {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Timestamp start;
+    private Timestamp end;
     @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movie movie;
@@ -39,5 +40,32 @@ public class Seans {
 
     public Long getId() {
         return id;
+    }
+
+    public Timestamp getStart() {
+        return start;
+    }
+
+    public void setStart(Timestamp start) {
+        this.start = start;
+    }
+
+    public Timestamp getEnd() {
+        return end;
+    }
+
+    public void setEnd(Timestamp end) {
+        this.end = end;
+    }
+
+    @Override
+    public String toString() {
+        return "Seans{" +
+                "id=" + id +
+                ", start=" + start +
+                ", end=" + end +
+                ", movie=" + movie +
+                ", room=" + room +
+                '}';
     }
 }
