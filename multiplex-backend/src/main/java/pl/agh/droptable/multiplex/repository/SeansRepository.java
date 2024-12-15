@@ -16,7 +16,9 @@ public interface SeansRepository extends JpaRepository<Seans, Long> {
             @Param("start") Timestamp start,
             @Param("end") Timestamp end
     );
-
+    List<Seans>findAllByStartBetween(Timestamp start, Timestamp end);
+    List<Seans>findAllByStartBetweenAndRoomId(Timestamp start, Timestamp end, Long roomId);
+    List<Seans>findAllByStartBetweenAndMovie_Id(Timestamp start, Timestamp end, Long movieId);
 }
 
 

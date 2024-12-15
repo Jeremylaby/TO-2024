@@ -4,11 +4,9 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.agh.droptable.multiplex.dto.AddSeansRequest;
+import pl.agh.droptable.multiplex.dto.FindSeansRequest;
 import pl.agh.droptable.multiplex.model.Movie;
 import pl.agh.droptable.multiplex.model.Room;
 import pl.agh.droptable.multiplex.model.Seans;
@@ -19,6 +17,7 @@ import pl.agh.droptable.multiplex.service.SeansService;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -74,4 +73,29 @@ public class SeansController {
 
         return ResponseEntity.ok(response);
     }
+    @DeleteMapping({"/{id}"})
+    public void deleteSeans(@PathVariable("id") Long id) {
+        seansService.deleteSeans(id);
+    }
+    @GetMapping("/all")
+    public ResponseEntity<List<Seans>> getAllSeans() {
+        List<Seans> seansList = seansService.getAllSeans();
+        return ResponseEntity.ok(seansList);
+    }
+    @GetMapping("/all/between-dates")
+    public ResponseEntity<List<Seans>> getBetweenDates(FindSeansRequest request) {
+        List<Seans> seansList = seansService.getAllSeans(request.getStart(), request.getEnd());
+        return ResponseEntity.ok(seansList);
+    }
+    @GetMapping("/all/between-dates-room")
+    public ResponseEntity<List<Seans>> getBetweenDatesInRoom(FindSeansRequest request) {
+        List<Seans> seansList = seansService.getAllSeansInRoom(request.getStart(), request.getEnd(), request.getRoomId());
+        return ResponseEntity.ok(seansList);
+    }
+    @GetMapping("/all/between-dates-movie")
+    public ResponseEntity<List<Seans>> getBetweenDatesMovie(FindSeansRequest request) {
+        List<Seans> seansList = seansService.getAllSeans(request.getStart(), request.getEnd(), request.getMovieId());
+        return ResponseEntity.ok(seansList);
+    }
+
 }
