@@ -2,6 +2,7 @@ package pl.agh.droptable.multiplex.model;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
@@ -17,6 +18,16 @@ public class Seans {
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 
     public Room getRoom() {
         return room;

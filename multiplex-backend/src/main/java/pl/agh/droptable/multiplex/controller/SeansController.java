@@ -67,6 +67,7 @@ public class SeansController {
         newSeans.setRoom(room);
         newSeans.setStart(start);
         newSeans.setEnd(end);
+        newSeans.setPrice(request.getPrice());
         seansService.addSeans(newSeans);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Seans added successful!");
