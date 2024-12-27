@@ -6,6 +6,7 @@ import pl.agh.droptable.multiplex.repository.SeansRepository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SeansService {
@@ -25,6 +26,9 @@ public class SeansService {
 
     public boolean isRoomAvailable(long roomId, Timestamp start, Timestamp end) {
         return seansRepository.findSeansByRoomAndDateRange(roomId, start, end).isEmpty();
+    }
+    public Optional<Seans> getSeansById(Long id) {
+        return seansRepository.findById(id);
     }
 
     public List<Seans> getAllSeans() {
