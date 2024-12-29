@@ -41,14 +41,12 @@ public class SeansController {
         Optional<Movie> movieOptional = movieService.getMovieById(request.getMovieId());
         Optional<Room> roomOptional = roomService.getRoom(request.getRoomId());
         if (movieOptional.isEmpty()) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "There is not such movie");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "There is not such movie"));
         }
         if (roomOptional.isEmpty()) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "There is not such room");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "There is not such room"));
         }
 
         Movie movie = movieOptional.get();
@@ -58,9 +56,8 @@ public class SeansController {
         Timestamp start = Timestamp.valueOf(startTime);
         Timestamp end = Timestamp.valueOf(endTime);
         if(!seansService.isRoomAvailable(room.getId(), start,end)){
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Room is not available int that time range");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("error", "Room is not available int that time range"));
         }
         Seans newSeans = new Seans();
         newSeans.setMovie(movie);
@@ -69,10 +66,8 @@ public class SeansController {
         newSeans.setEnd(end);
         newSeans.setPrice(request.getPrice());
         seansService.addSeans(newSeans);
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Seans added successful!");
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of("message", "Seans added successful!"));
     }
     @DeleteMapping({"/{id}"})
     public void deleteSeans(@PathVariable("id") Long id) {
