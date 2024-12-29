@@ -7,8 +7,11 @@ import pl.agh.droptable.multiplex.model.Reservation;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     @Query("SELECT r FROM Reservation r WHERE r.seans.start < :date")
     List<Reservation> findUnpaidReservationBefore(@Param("date")Timestamp date);
+    @Query("SELECT r FROM Reservation r WHERE r.seans.id=:seansId AND r.seat.id = :seatId")
+    Optional<Reservation> isSeatTaken(@Param("seansId")Long seansId, @Param("seatId")Long seatId);
 }

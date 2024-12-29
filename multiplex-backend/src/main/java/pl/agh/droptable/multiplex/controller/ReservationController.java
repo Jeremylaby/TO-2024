@@ -1,5 +1,6 @@
 package pl.agh.droptable.multiplex.controller;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,12 +35,12 @@ public class ReservationController {
         this.seatRepository = seatRepository;
         this.userRepository = userRepository;
     }
-
+    @Transactional
     @PostMapping("/add")
     public ResponseEntity<?> addReservation(@Valid @RequestBody AddReservationRequest request) {
         Optional<Seans> seansOptional = seansService.getSeansById(request.getSeansId());
         Optional<User> userOptional = userRepository.findById(request.getUserId());
-        Optional<Seat> seatOptional = seatRepository.findById(request.getSeatId());
+        List<Long> seatIds = request.getSeats();
         if(seansOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "There is not such seans"));
@@ -48,24 +49,34 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "There is not such user"));
         }
-        if(seatOptional.isEmpty()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "There is not such seat"));
-        }
+
         Seans seans = seansOptional.get();
         User user = userOptional.get();
-        Seat seat = seatOptional.get();
-        if(!Objects.equals(seans.getRoom().getId(), seat.getRoom().getId())){
+        List<Seat> seats = seatRepository.findAllById(seatIds);
+        if(seats.size()!=seatIds.size()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "There is not such seat in seans room"));
+                    .body(Map.of("error", "Some seats are missing"));
         }
-        Reservation reservation = new Reservation();
-        reservation.setSeat(seat);
-        reservation.setUser(user);
-        reservation.setSeans(seans);
-        reservation.setPaid(false);
-        reservation.setPrice(seans.getPrice());
-        reservationService.addReservation(reservation);
+        List<Reservation> reservations = new ArrayList<>();
+        for( Seat seat : seats) {
+
+            if (!Objects.equals(seans.getRoom().getId(), seat.getRoom().getId())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "There is not such seat: "+ seat +" in seans room: "+seans.getRoom().getId()));
+            }
+            if(reservationService.isSeatTaken(seans.getId(),seat.getId())){
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(Map.of("error", "Seat already taken "+seat));
+            }
+            Reservation reservation = new Reservation();
+            reservation.setSeat(seat);
+            reservation.setUser(user);
+            reservation.setSeans(seans);
+            reservation.setPaid(false);
+            reservation.setPrice(seans.getPrice());
+            reservations.add(reservation);
+        }
+        reservationService.addReservations(reservations);
         return ResponseEntity.ok(Map.of("message", "Reservation added successfully!"));
     }
     @GetMapping("/{id}")

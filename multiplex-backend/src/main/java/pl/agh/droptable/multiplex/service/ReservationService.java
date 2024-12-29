@@ -18,6 +18,9 @@ public class ReservationService {
     public void addReservation(Reservation reservation) {
         reservationRepository.save(reservation);
     }
+    public void addReservations(List<Reservation> reservations) {
+        reservationRepository.saveAll(reservations);
+    }
     public Optional<Reservation> getReservation(Long id) {
         return reservationRepository.findById(id);
     }
@@ -26,5 +29,8 @@ public class ReservationService {
     }
     public List<Reservation> getUnpaidReservationsBefore(Timestamp timestamp) {
         return reservationRepository.findUnpaidReservationBefore(timestamp);
+    }
+    public boolean isSeatTaken(Long seansId, Long seatId){
+        return reservationRepository.isSeatTaken(seansId,seatId).isPresent();
     }
 }

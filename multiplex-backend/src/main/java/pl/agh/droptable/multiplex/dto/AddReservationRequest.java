@@ -1,9 +1,11 @@
 package pl.agh.droptable.multiplex.dto;
 
+import java.util.List;
+
 public class AddReservationRequest {
     private Long userId;
     private Long seansId;
-    private Long seatId;
+    private List<Long> seats;
 
     public Long getUserId() {
         return userId;
@@ -21,11 +23,11 @@ public class AddReservationRequest {
         this.seansId = seansId;
     }
 
-    public Long getSeatId() {
-        return seatId;
+    public List<Long> getSeats() {
+        return seats;
     }
 
-    public void setSeatId(Long seatId) {
-        this.seatId = seatId;
+    public void setSeats(List<Long> seats) {
+        this.seats = seats;
     }
 }
