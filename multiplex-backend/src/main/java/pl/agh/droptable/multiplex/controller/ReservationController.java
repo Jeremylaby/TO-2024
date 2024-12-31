@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import pl.agh.droptable.multiplex.dto.AddReservationRequest;
+import pl.agh.droptable.multiplex.dto.ReservationTimeRange;
 import pl.agh.droptable.multiplex.model.Reservation;
 import pl.agh.droptable.multiplex.model.Seans;
 import pl.agh.droptable.multiplex.model.Seat;
@@ -48,7 +49,7 @@ public class ReservationController {
         if(userOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "There is not such user"));
-        }
+        }   
 
         Seans seans = seansOptional.get();
         User user = userOptional.get();
@@ -90,7 +91,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservation);
     }
     @DeleteMapping("/{id}/delete")
-    public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<?> deleteReservation(@PathVariable("id") Long id) {
         Optional<Reservation> optionalReservation = reservationService.getReservation(id);
         if(optionalReservation.isEmpty()){;
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -101,7 +102,7 @@ public class ReservationController {
         return ResponseEntity.ok(Map.of("message", "Reservation deleted successfully!"));
     }
     @PutMapping("/{id}/pay")
-    public ResponseEntity<?> payReservation(@PathVariable Long id) {
+    public ResponseEntity<?> payReservation(@PathVariable("id") Long id) {
         Optional<Reservation> optionalReservation = reservationService.getReservation(id);
         if(optionalReservation.isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -116,6 +117,27 @@ public class ReservationController {
         reservationService.addReservation(reservation);
         return ResponseEntity.ok(Map.of("message", "Reservation paid successfully!"));
 
+    }
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Reservation>> getReservationsByUserId(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(reservationService.findReservationsByUserId(id));
+    }
+    @GetMapping("/all")
+    public ResponseEntity<List<Reservation>> getAllReservations() {
+        return ResponseEntity.ok(reservationService.getReservations());
+    }
+    @GetMapping("/all/today")
+    public ResponseEntity<List<Reservation>> getAllReservationsToday() {
+        LocalDateTime today = LocalDateTime.now();
+        Timestamp start = Timestamp.valueOf(today.withHour(0).withMinute(0).withSecond(0));
+        Timestamp end = Timestamp.valueOf(today.withHour(23).withMinute(59).withSecond(59));
+        return ResponseEntity.ok(reservationService.findReservationsBetweenDates(start, end));
+    }
+    @GetMapping("/all/time-range")
+    public ResponseEntity<List<Reservation>> getAllReservationsTimeRange(@Valid @RequestBody ReservationTimeRange request) {
+        Timestamp start  = request.getStart();
+        Timestamp end = request.getEnd();
+        return ResponseEntity.ok(reservationService.findReservationsBetweenDates(start, end));
     }
     //15 minutes
     @Scheduled(fixedRate = FIXED_RATE)

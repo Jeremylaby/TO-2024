@@ -14,4 +14,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findUnpaidReservationBefore(@Param("date")Timestamp date);
     @Query("SELECT r FROM Reservation r WHERE r.seans.id=:seansId AND r.seat.id = :seatId")
     Optional<Reservation> isSeatTaken(@Param("seansId")Long seansId, @Param("seatId")Long seatId);
+    List<Reservation> findAllByUserId(Long userId);
+    @Query("SELECT r FROM Reservation r WHERE r.seans.start>= :start AND r.seans.start<=:end")
+    List<Reservation> findAllBetweenDates(@Param("start")Timestamp start, @Param("end")Timestamp end);
 }

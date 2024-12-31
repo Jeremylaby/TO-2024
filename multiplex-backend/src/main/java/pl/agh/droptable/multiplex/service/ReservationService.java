@@ -33,4 +33,13 @@ public class ReservationService {
     public boolean isSeatTaken(Long seansId, Long seatId){
         return reservationRepository.isSeatTaken(seansId,seatId).isPresent();
     }
+    public List<Reservation> findReservationsByUserId(Long userId) {
+        return reservationRepository.findAllByUserId(userId);
+    }
+    public List<Reservation> getReservations(){
+        return reservationRepository.findAll();
+    }
+    public List<Reservation> findReservationsBetweenDates(Timestamp start, Timestamp end){
+        return reservationRepository.findAllBetweenDates(start, end);
+    }
 }
