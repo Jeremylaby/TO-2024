@@ -28,7 +28,7 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final SeatRepository seatRepository;
     private final UserRepository userRepository;
-    private final static Long FIXED_RATE = 900000L;
+    private static final long FIXED_RATE = 900000L;
 
     public ReservationController(SeansService seansService, ReservationService reservationService, SeatRepository seatRepository, UserRepository userRepository) {
         this.seansService = seansService;
