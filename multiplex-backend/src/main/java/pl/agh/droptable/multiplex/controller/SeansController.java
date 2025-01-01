@@ -16,7 +16,6 @@ import pl.agh.droptable.multiplex.service.SeansService;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -63,7 +62,7 @@ public class SeansController {
         newSeans.setMovie(movie);
         newSeans.setRoom(room);
         newSeans.setStart(start);
-        newSeans.setEnd(end);
+        newSeans.setEndTime(end);
         newSeans.setPrice(request.getPrice());
         seansService.addSeans(newSeans);
 

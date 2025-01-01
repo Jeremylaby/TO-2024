@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface SeansRepository extends JpaRepository<Seans, Long> {
-    @Query("SELECT s FROM Seans s WHERE s.room.id = :roomId AND (s.end BETWEEN :start AND :end OR s.start BETWEEN :start AND :end) ORDER BY s.movie.id")
+    @Query("SELECT s FROM Seans s WHERE s.room.id = :roomId AND (s.endTime BETWEEN :start AND :end OR s.start BETWEEN :start AND :end) ORDER BY s.movie.id")
     List<Seans> findSeansByRoomAndDateRange(
             @Param("roomId") long roomId,
             @Param("start") Timestamp start,
