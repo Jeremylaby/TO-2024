@@ -13,8 +13,14 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import NavBar from "../components/NavBar.jsx";
 import {useAuth} from "../components/AuthProvider.jsx";
+import {useNavigate} from "react-router-dom";
 const Account = () => {
     const {user, logout} = useAuth()
+    const navigate = useNavigate();
+
+    const navigateToReservations = () => {
+        navigate('/account/reservations');
+    };
     const remove = async (user) => {
         await fetch(`/api/user/${user.id}`, {
             method: "DELETE",
@@ -94,7 +100,9 @@ const Account = () => {
                                     </ListItem>
                                     <Divider/>
                                     <ListItem>
-                                        <ListItemText primary="More options..."/>
+                                        <ListItemText
+                                            onClick={navigateToReservations}
+                                            primary="Reservations"/>
                                     </ListItem>
                                     <Divider/>
                                     <ListItem>
