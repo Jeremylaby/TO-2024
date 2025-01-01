@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
-import pl.agh.droptable.multiplex.dto.AddReservationRequest;
+import pl.agh.droptable.multiplex.dto.request.AddReservationRequest;
 import pl.agh.droptable.multiplex.dto.ReservationTimeRange;
 import pl.agh.droptable.multiplex.model.Reservation;
 import pl.agh.droptable.multiplex.model.Seans;
