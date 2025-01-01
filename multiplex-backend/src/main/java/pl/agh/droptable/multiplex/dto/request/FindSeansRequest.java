@@ -1,4 +1,4 @@
-package pl.agh.droptable.multiplex.dto;
+package pl.agh.droptable.multiplex.dto.request;
 
 import java.sql.Timestamp;
 
