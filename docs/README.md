@@ -166,6 +166,308 @@ Usuwa istniejącego użytkownika z systemu na podstawie id.
   }
   ```
 
+
+---
+
+### `MovieController`
+
+`MovieController` zajmuje się zarządzaniem filmami w systemie Multiplex. Oferuje punkty końcowe do dodawania, pobierania, aktualizacji oraz usuwania informacji o filmach.
+
+#### **Dodanie nowego filmu**
+
+**Endpoint:**  
+`POST /movie`
+
+**Opis:**  
+Dodaje nowy film do systemu.
+
+**Treść żądania (`Request Body`):**
+
+| Nazwa pola | Typ         | Walidacja                  | Opis                            |
+| ---------- | ----------- | -------------------------- | ------------------------------- |
+| `title`    | String      | Nie puste                  | Tytuł filmu.                    |
+| `director` | String      | Nie puste                  | Reżyser filmu.                  |
+| `duration` | Integer     | Wartość dodatnia           | Czas trwania filmu w minutach.  |
+| `genreIds` | List\<Long> | Istniejące identyfikatory  | Lista ID przypisanych gatunków. |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Film został pomyślnie dodany.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "id": 1,
+    "title": "Inception",
+    "director": "Christopher Nolan",
+    "duration": 148,
+    "genres": ["Sci-Fi", "Thriller"]
+  }
+  ```
+
+---
+
+#### **Pobranie filmu po ID**
+
+**Endpoint:**  
+`GET /movie/:id`
+
+**Opis:**  
+Zwraca szczegóły filmu na podstawie jego ID.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Film został znaleziony.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "id": 1,
+    "title": "Inception",
+    "director": "Christopher Nolan",
+    "duration": 148,
+    "genres": ["Sci-Fi", "Thriller"]
+  }
+  ```
+
+- **Status 404 Not Found:** Film o podanym ID nie istnieje.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "Movie not found."
+  }
+  ```
+
+---
+
+#### **Pobranie wszystkich filmów**
+
+**Endpoint:**  
+`GET /movie`
+
+**Opis:**  
+Zwraca listę wszystkich filmów w systemie.
+
+**Odpowiedź:**
+
+- **Status 200 OK:**  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "id": 1,
+      "title": "Inception",
+      "director": "Christopher Nolan",
+      "duration": 148,
+      "genres": ["Sci-Fi", "Thriller"]
+    },
+    {
+      "id": 2,
+      "title": "Interstellar",
+      "director": "Christopher Nolan",
+      "duration": 169,
+      "genres": ["Sci-Fi", "Drama"]
+    }
+  ]
+  ```
+
+---
+
+#### **Usunięcie filmu**
+
+**Endpoint:**  
+`DELETE /movie/:id`
+
+**Opis:**  
+Usuwa film z systemu na podstawie ID.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Film został pomyślnie usunięty.  
+
+- **Status 404 Not Found:** Film o podanym ID nie istnieje.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "Movie not found."
+  }
+  ```
+
+---
+
+#### **Aktualizacja filmu**
+
+**Endpoint:**  
+`PUT /movie`
+
+**Opis:**  
+Aktualizuje dane istniejącego filmu.
+
+**Treść żądania (`Request Body`):**
+
+| Nazwa pola | Typ         | Walidacja                  | Opis                            |
+| ---------- | ----------- | -------------------------- | ------------------------------- |
+| `title`    | String      | Nie puste                  | Tytuł filmu.                    |
+| `director` | String      | Nie puste                  | Reżyser filmu.                  |
+| `duration` | Integer     | Wartość dodatnia           | Czas trwania filmu w minutach.  |
+| `genreIds` | List\<Long> | Istniejące identyfikatory  | Lista ID przypisanych gatunków. |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Film został pomyślnie zaktualizowany.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "id": 1,
+    "title": "Updated Title",
+    "director": "Updated Director",
+    "duration": 150,
+    "genres": ["Updated Genre"]
+  }
+  ```
+
+---
+
+### `RoomController`
+
+`RoomController` zajmuje się zarządzaniem salami kinowymi w systemie Multiplex. Oferuje punkty końcowe do dodawania, pobierania, aktualizacji oraz usuwania informacji o salach.
+
+#### **Dodanie nowej sali**
+
+**Endpoint:**  
+`POST /room`
+
+**Opis:**  
+Dodaje nową salę kinową do systemu.
+
+**Treść żądania (`Request Body`):**
+
+| Nazwa pola | Typ    | Walidacja   | Opis                       |
+| ---------- | ------ | ----------- | -------------------------- |
+| `name`     | String | Nie puste   | Nazwa sali kinowej.        |
+| `capacity` | Int    | Wartość > 0 | Liczba miejsc w sali kinowej. |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Sala została pomyślnie dodana.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "id": 1,
+    "name": "Room A",
+    "capacity": 120
+  }
+  ```
+
+---
+
+#### **Pobranie sali po ID**
+
+**Endpoint:**  
+`GET /room/:id`
+
+**Opis:**  
+Zwraca szczegóły sali na podstawie jej ID.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Sala została znaleziona.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "id": 1,
+    "name": "Room A",
+    "capacity": 120
+  }
+  ```
+
+- **Status 404 Not Found:** Sala o podanym ID nie istnieje.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "Room not found."
+  }
+  ```
+
+---
+
+#### **Pobranie wszystkich sal**
+
+**Endpoint:**  
+`GET /room`
+
+**Opis:**  
+Zwraca listę wszystkich sal w systemie.
+
+**Odpowiedź:**
+
+- **Status 200 OK:**  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "id": 1,
+      "name": "Room A",
+      "capacity": 120
+    },
+    {
+      "id": 2,
+      "name": "Room B",
+      "capacity": 150
+    }
+  ]
+  ```
+
+---
+
+#### **Aktualizacja sali**
+
+**Endpoint:**  
+`PUT /room`
+
+**Opis:**  
+Aktualizuje dane istniejącej sali.
+
+**Treść żądania (`Request Body`):**
+
+| Nazwa pola | Typ    | Walidacja   | Opis                       |
+| ---------- | ------ | ----------- | -------------------------- |
+| `id`       | Long   | Nie puste   | ID sali.                   |
+| `name`     | String | Nie puste   | Nazwa sali kinowej.        |
+| `capacity` | Int    | Wartość > 0 | Liczba miejsc w sali kinowej. |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Sala została pomyślnie zaktualizowana.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "id": 1,
+    "name": "Updated Room A",
+    "capacity": 130
+  }
+  ```
+
+---
+
+#### **Usunięcie sali**
+
+**Endpoint:**  
+`DELETE /room/:id`
+
+**Opis:**  
+Usuwa salę kinową z systemu na podstawie ID.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Sala została pomyślnie usunięta.  
+
+- **Status 404 Not Found:** Sala o podanym ID nie istnieje.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "Room not found."
+  }
+  ```
+
 ## Diagram Przepływu Logowania i Rejestracji
 
 W celu lepszego zrozumienia, jak działa proces rejestracji i autoryzacji użytkowników w systemie, przedstawiamy diagram przepływu tego procesu. Diagram ilustruje kroki, które zachodzą od momentu wprowadzenia danych przez użytkownika, aż po ich zapis w bazie danych lub uwierzytelnienie użytkownika w systemie.

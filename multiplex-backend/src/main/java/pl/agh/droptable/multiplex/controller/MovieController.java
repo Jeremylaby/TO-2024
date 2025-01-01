@@ -22,7 +22,7 @@ public class MovieController {
         this.genreRepository = genreRepository;
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public Movie addMovie(@RequestBody CreateMovieRequest request) {
         var movie = request.toMovie(genreRepository);
         return movieRepository.saveAndFlush(movie);
