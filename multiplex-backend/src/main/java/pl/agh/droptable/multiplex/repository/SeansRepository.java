@@ -18,6 +18,8 @@ public interface SeansRepository extends JpaRepository<Seans, Long> {
     List<Seans>findAllByStartBetween(Timestamp start, Timestamp end);
     List<Seans> findAllByStartBetweenAndRoomIdOrderByMovieId(Timestamp start, Timestamp end, Long roomId);
     List<Seans> findAllByStartBetweenAndMovie_IdOrderByRoomId(Timestamp start, Timestamp end, Long movieId);
+    List<Seans> findByStartAfter(Timestamp start);
+    List<Seans> findAllByMovieId(Long movieId);
 }
 
 

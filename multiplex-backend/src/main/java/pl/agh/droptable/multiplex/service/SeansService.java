@@ -47,4 +47,12 @@ public class SeansService {
         return seansRepository.findAllByStartBetweenAndRoomIdOrderByMovieId(start, end, roomId);
     }
 
+    public List<Seans> getAllSeansFrom(Timestamp startTime) {
+        return seansRepository.findByStartAfter(startTime);
+    }
+
+    public List<Seans> getAllSeansForMovie(Long movieId) {
+        return seansRepository.findAllByMovieId(movieId);
+    }
+
 }

@@ -92,5 +92,14 @@ public class SeansController {
         List<Seans> seansList = seansService.getAllSeans(request.getStart(), request.getEnd(), request.getMovieId());
         return ResponseEntity.ok(seansList);
     }
-
+    @GetMapping("/movies")
+    public ResponseEntity<List<Movie>> getCurrentlyPlayingMovies() {
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+        List<Seans> upcomingSeans = seansService.getAllSeansFrom(now);
+        List<Movie> movies = upcomingSeans.stream()
+                .map(Seans::getMovie)
+                .distinct()
+                .toList();
+        return ResponseEntity.ok(movies);
+    }
 }

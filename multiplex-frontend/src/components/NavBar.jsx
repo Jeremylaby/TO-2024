@@ -15,7 +15,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "./AuthProvider.jsx";
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages = ["Movies"];
 
 export default function ResponsiveAppBar() {
   const { user } = useAuth();
@@ -120,6 +120,8 @@ export default function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
+                component={Link}
+                to={`/${page.toLowerCase()}`}
                 key={page}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}

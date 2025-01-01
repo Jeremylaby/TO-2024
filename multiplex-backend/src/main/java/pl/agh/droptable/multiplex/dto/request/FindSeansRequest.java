@@ -1,26 +1,27 @@
 package pl.agh.droptable.multiplex.dto.request;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 public class FindSeansRequest {
-    private Timestamp start;
-    private Timestamp end;
+    private String start;
+    private String end;
     private Long roomId;
     private Long movieId;
 
     public Timestamp getStart() {
-        return start;
+        return Timestamp.from(Instant.parse(start));
     }
 
-    public void setStart(Timestamp start) {
+    public void setStart(String start) {
         this.start = start;
     }
 
     public Timestamp getEnd() {
-        return end;
+        return Timestamp.from(Instant.parse(end));
     }
 
-    public void setEnd(Timestamp end) {
+    public void setEnd(String end) {
         this.end = end;
     }
 
