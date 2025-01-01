@@ -1,4 +1,4 @@
-package pl.agh.droptable.multiplex.dto;
+package pl.agh.droptable.multiplex.dto.request;
 
 public class LoginRequest {
     private String email;

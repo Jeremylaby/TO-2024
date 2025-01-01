@@ -2,6 +2,7 @@ package pl.agh.droptable.multiplex.controller;
 
 import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.*;
+import pl.agh.droptable.multiplex.dto.UserDTO;
 import pl.agh.droptable.multiplex.model.User;
 import pl.agh.droptable.multiplex.repository.UserRepository;
 
@@ -18,8 +19,8 @@ public class UserController {
     }
 
     @PutMapping
-    public User putUser(@RequestBody User user) {
-        return userRepository.save(user);
+    public User updateUser(@RequestBody UserDTO user) {
+        return userRepository.save(user.toUser());
     }
 
     @DeleteMapping("/{id}")
