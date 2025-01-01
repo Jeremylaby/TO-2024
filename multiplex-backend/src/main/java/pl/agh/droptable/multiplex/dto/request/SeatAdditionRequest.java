@@ -1,6 +1,4 @@
-package pl.agh.droptable.multiplex.dto;
-
-import pl.agh.droptable.multiplex.model.Room;
+package pl.agh.droptable.multiplex.dto.request;
 
 public class SeatAdditionRequest {
     private String roomName;

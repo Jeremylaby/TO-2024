@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.agh.droptable.multiplex.dto.SeatAdditionRequest;
+import pl.agh.droptable.multiplex.dto.request.SeatAdditionRequest;
 import pl.agh.droptable.multiplex.model.Room;
 import pl.agh.droptable.multiplex.model.Seat;
 import pl.agh.droptable.multiplex.repository.RoomRepository;

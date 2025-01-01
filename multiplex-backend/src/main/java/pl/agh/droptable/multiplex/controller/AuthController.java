@@ -10,8 +10,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import pl.agh.droptable.multiplex.dto.LoginRequest;
-import pl.agh.droptable.multiplex.dto.RegistrationRequest;
+import pl.agh.droptable.multiplex.dto.request.LoginRequest;
+import pl.agh.droptable.multiplex.dto.request.RegistrationRequest;
 import pl.agh.droptable.multiplex.model.User;
 import pl.agh.droptable.multiplex.repository.UserRepository;
 
