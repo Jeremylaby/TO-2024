@@ -2,7 +2,7 @@ import {Box, Grid2, TableCell, TableRow} from "@mui/material";
 import Typography from "@mui/material/Typography";
 
 const Reservation = ({reservation}) => {
-    const date = new Date(reservation.seans.start);
+    const date = new Date(reservation.start);
 
     // Formatowanie daty
     const formattedDate = new Intl.DateTimeFormat("en-US", {
@@ -53,13 +53,16 @@ const Reservation = ({reservation}) => {
                                 whiteSpace: "normal",
                                 wordWrap: "break-word",
                             }}>
-                                {reservation.seans.movie.title}
+                                {reservation.movie.title}
+                            </Typography>
+                            <Typography variant="subtitle2" color="textSecondary">
+                                Director: {reservation.movie.director}
                             </Typography>
                             <Typography variant="body2" sx={{mt: 1, mb: 2}}>
                                 123 Alekino St., Krakow
                             </Typography>
                             <Typography variant="caption" sx={{mt: 1, mb: 2}}>
-                                Owner: {reservation.user.firstName} {reservation.user.lastName}
+                                Owner: {reservation.firstName} {reservation.lastName}
                             </Typography>
 
                             {!reservation.paid&&(<Typography color={"error"} variant="body1" sx={{mt: 1, mb: 2}}>
@@ -72,7 +75,7 @@ const Reservation = ({reservation}) => {
                             flexDirection: {xs:"column",sm:"row"},
                             justifyContent: "space-between",
                         }}>
-                            {[`Date: ${formattedDate}`, `Time: ${formattedTime}`, `PRICE: $${reservation.seans.price}`].map((text, index) => (
+                            {[`Date: ${formattedDate}`, `Time: ${formattedTime}`, `PRICE: $${reservation.price}`].map((text, index) => (
                                 <Grid2 item xs={4} key={index}>
                                     <Box
                                         sx={{
@@ -90,12 +93,13 @@ const Reservation = ({reservation}) => {
                             ))}
                         </Grid2>
                     </Grid2>
-                    <Grid2 size ={1}></Grid2>
+                    <Grid2 size ={1}>
+                    </Grid2>
                     <Grid2
                         size={{sm: 1, xs: 12}}
                         sx={{
-                            borderLeft: {sm: "1px dashed"},
-                            borderTop: {xs: "1px dashed", sm: "0px"},
+                            borderLeft: {sm: "2px dashed"},
+                            borderTop: {xs: "2px dashed", sm: "0px"},
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
@@ -110,7 +114,7 @@ const Reservation = ({reservation}) => {
                             }}
                         />
                     </Grid2>
-                    <Grid2 container size={{sm: 1, xs: 12}} spacing={1} columns={12} sx={{
+                    <Grid2 container size={{sm: 1, xs: 12}} spacing={0} columns={12} sx={{
                         pl: {sm: 0, xs: 4},
                         pr: {sm: 0, xs: 4},
                         pt: {sm: 4},
@@ -126,6 +130,7 @@ const Reservation = ({reservation}) => {
                                 display: "flex",
                                 flexDirection: {xs: "row", sm: "column"},
                                 justifyContent: "space-between",
+                                alignItems:"end"
 
                             }}
                         >
@@ -157,7 +162,7 @@ const Reservation = ({reservation}) => {
                                 justifyContent: "space-between",
                             }}
                         >
-                            {[reservation.seat.row, reservation.seat.seatNumber, reservation.seans.room.name].map((label, index) => (
+                            {[reservation.row, reservation.seatNumber, reservation.roomName].map((label, index) => (
                                 <Typography
                                     key={index}
                                     variant="h5"

@@ -102,6 +102,7 @@ const Account = () => {
                                     <ListItem>
                                         <ListItemText
                                             onClick={navigateToReservations}
+                                            sx={{ cursor: "pointer" }}
                                             primary="Reservations"/>
                                     </ListItem>
                                     <Divider/>

@@ -41,7 +41,8 @@ export default function ResponsiveAppBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          {/*<AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />*/}
+            <Box component={"img"} src={"/logo.png"} sx={{width:"40px", display: { xs: "none", md: "flex" }, mr: 1}}/>
           <Link to="/">
             <Typography
               variant="h6"
@@ -54,7 +55,7 @@ export default function ResponsiveAppBar() {
                 fontFamily: "monospace",
                 fontWeight: 700,
                 letterSpacing: ".3rem",
-                color: "inherit",
+                color: "white",
                 textDecoration: "none",
               }}
             >
@@ -96,7 +97,8 @@ export default function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+            <Box component={"img"} src={"/logo.png"} sx={{width:"40px", display: { xs: "flex", md: "none" }, mr: 1}}/>
+          {/*<AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />*/}
           <Typography
             variant="h5"
             noWrap
