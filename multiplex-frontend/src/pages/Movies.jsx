@@ -19,7 +19,7 @@ const Movies = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch("/api/seans/movies");
+        const response = await fetch("/api/seans/currently-playing");
         if (!response.ok) {
           throw new Error("Failed to fetch movies.");
         }
@@ -54,7 +54,7 @@ const Movies = () => {
             {movies.map((movie) => (
               <Grid2 xs={12} sm={6} md={3} key={movie.id}>
                 <Link
-                  to={`/movie/${movie.id}`}
+                  to={`/movie-details/${movie.id}`}
                   state={{ movie }}
                   style={{ textDecoration: "none" }}
                 >

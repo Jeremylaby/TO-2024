@@ -29,7 +29,8 @@ function App() {
           <Route path={"/account"} element={<Account />} />
           <Route path={"/account/reservations"} element={<MyReservations/>}/>
           <Route path={"/movies"} element={<Movies />} />
-          <Route path={"/movie/:id"} element={<MovieDetails />} />
+          <Route path={"/movie-details/:id"} element={<MovieDetails />} />
+          <Route path="/seats/:seansId" element={<SeatSelection />} />
           <Route
             path={"/admin/users"}
             element={
