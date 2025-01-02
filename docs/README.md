@@ -166,6 +166,554 @@ Usuwa istniejącego użytkownika z systemu na podstawie id.
   }
   ```
 
+---
+
+### `ReservationController`
+
+`ReservationController` obsługuje rezerwacje w systemie Multiplex. Oferuje punkty końcowe do tworzenia, usuwania, aktualizacji oraz pobierania informacji o rezerwacjach. Wspiera również mechanizm harmonogramowania, który automatycznie usuwa nieopłacone rezerwacje.
+
+---
+
+#### **Dodanie rezerwacji**
+
+**Endpoint:**  
+`POST /api/reservation/add`
+
+**Opis:**  
+Tworzy nową rezerwację na wybrane miejsca w ramach określonego seansu.
+
+**Treść żądania (`Request Body`):**
+
+| Nazwa pola | Typ        | Walidacja     | Opis                                            |
+| ---------- | ---------- | ------------- | ----------------------------------------------- |
+| `seansId`  | Long       | Istniejący ID | ID seansu, na który dokonywana jest rezerwacja. |
+| `userId`   | Long       | Istniejący ID | ID użytkownika, który rezerwuje miejsca.        |
+| `seats`    | List<Long> | Nie puste     | Lista ID miejsc.                                |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Rezerwacja została pomyślnie dodana.  
+  Przykład odpowiedzi:
+
+  ```json
+  {
+    "message": "Reservation added successfully!"
+  }
+  ```
+
+- **Status 400 Bad Request:** Niektóre miejsca nie istnieją lub nie pasują do pokoju seansu.  
+  Przykład odpowiedzi:
+
+  ```json
+  {
+    "error": "Some seats are missing"
+  }
+  ```
+
+- **Status 409 Conflict:** Przynajmniej jedno z wybranych miejsc jest już zajęte.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "Seat already taken {...}"
+  }
+  ```
+
+---
+
+#### **Pobranie rezerwacji po ID**
+
+**Endpoint:**  
+`GET /api/reservation/{id}`
+
+**Opis:**  
+Zwraca szczegóły rezerwacji na podstawie jej ID.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Rezerwacja została znaleziona.  
+  Przykład odpowiedzi:
+
+  ```json
+  {
+    "id": 1,
+    "paid": false,
+    "user": {...},
+    "seat": {...},
+    "seans": {...},
+    "price": 45.00
+  }
+  ```
+
+- **Status 400 Bad Request:** Rezerwacja o podanym ID nie istnieje.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "There is not such reservation"
+  }
+  ```
+
+---
+
+#### **Usunięcie rezerwacji**
+
+**Endpoint:**  
+`DELETE /api/reservation/{id}/delete`
+
+**Opis:**  
+Usuwa istniejącą rezerwację na podstawie jej ID.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Rezerwacja została pomyślnie usunięta.  
+  Przykład odpowiedzi:
+
+  ```json
+  {
+    "message": "Reservation deleted successfully!"
+  }
+  ```
+
+- **Status 400 Bad Request:** Rezerwacja o podanym ID nie istnieje.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "There is not such reservation"
+  }
+  ```
+
+---
+
+#### **Opłacenie rezerwacji**
+
+**Endpoint:**  
+`PUT /api/reservation/{id}/pay`
+
+**Opis:**  
+Ustawia status rezerwacji na opłaconą.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Rezerwacja została pomyślnie opłacona.  
+  Przykład odpowiedzi:
+
+  ```json
+  {
+    "message": "Reservation paid successfully!"
+  }
+  ```
+
+- **Status 400 Bad Request:** Rezerwacja o podanym ID nie istnieje lub została już opłacona.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "Reservation already paid"
+  }
+  ```
+
+---
+
+#### **Pobranie rezerwacji użytkownika**
+
+**Endpoint:**  
+`GET /api/reservation/user/{id}`
+
+**Opis:**  
+Zwraca listę rezerwacji użytkownika na podstawie jego ID.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Lista rezerwacji użytkownika.  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "id": 1,
+      "paid": true,
+      "user": {...},
+      "seat": {...},
+      "seans": {...},
+      "price": 45.00
+    },
+    {...}
+  ]
+  ```
+
+---
+
+#### **Pobranie wszystkich rezerwacji**
+
+**Endpoint:**  
+`GET /api/reservation/all`
+
+**Opis:**  
+Zwraca listę wszystkich rezerwacji w systemie.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Lista wszystkich rezerwacji.  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "id": 1,
+      "paid": true,
+      "user": {...},
+      "seat": {...},
+      "seans": {...},
+      "price": 45.00
+    },
+    {...}
+  ]
+  ```
+
+---
+
+#### **Pobranie rezerwacji dzisiejszych**
+
+**Endpoint:**  
+`GET /api/reservation/all/today`
+
+**Opis:**  
+Zwraca listę rezerwacji, które odbywają się w dniu dzisiejszym.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Lista dzisiejszych rezerwacji.  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "id": 1,
+      "paid": true,
+      "user": {...},
+      "seat": {...},
+      "seans": {...},
+      "price": 45.00
+    },
+    {...}
+  ]
+  ```
+
+---
+
+#### **Pobranie rezerwacji z zakresu dat**
+
+**Endpoint:**  
+`GET /api/reservation/all/time-range`
+
+**Opis:**  
+Zwraca listę rezerwacji z określonego przedziału czasowego.
+
+**Treść żądania (`Request Body`):**
+
+| Nazwa pola | Typ    | Walidacja | Opis              |
+| ---------- | ------ | --------- | ----------------- |
+| `start`    | String | Nie puste | Początek zakresu. |
+| `end`      | String | Nie puste | Koniec zakresu.   |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Lista rezerwacji z zakresu.  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "id": 1,
+      "paid": true,
+      "user": {...},
+      "seat": {...},
+      "seans": {...},
+      "price": 45.00
+    },
+    {...}
+  ]
+  ```
+
+---
+
+### **Automatyczne usuwanie nieopłaconych rezerwacji**
+
+#### **Endpoint:**
+
+Brak bezpośredniego punktu końcowego – proces wykonywany w tle jako zadanie cykliczne za pomocą harmonogramu.
+
+---
+
+#### **Opis:**
+
+Zadanie harmonogramowane weryfikuje wszystkie nieopłacone rezerwacje, których seanse zaczynają się w ciągu godziny. Jeśli rezerwacja nie jest opłacona, zostaje automatycznie usunięta z systemu.
+
+---
+
+#### **Mechanizm działania:**
+
+1. **Interwał wykonania:**  
+   Zadanie wykonywane jest cyklicznie co 15 minut (zgodnie z wartością stałej `FIXED_RATE = 900000L`, co oznacza 15 minut w milisekundach).
+
+2. **Kroki operacji:**
+   - Pobranie aktualnego czasu.
+   - Obliczenie czasu docelowego jako godzina od aktualnego momentu.
+   - Pobranie listy nieopłaconych rezerwacji, których czas seansu przypada przed tym czasem docelowym.
+   - Usunięcie każdej z tych rezerwacji z systemu za pomocą metody `reservationService.removeReservation()`.
+
+---
+
+#### **Kod logiki:**
+
+```java
+@Scheduled(fixedRate = FIXED_RATE)
+public void removeUnpaidReservations() {
+    Timestamp time = Timestamp.valueOf(LocalDateTime.now().plusHours(1)); // Określenie granicy czasowej
+    List<Reservation> reservations = reservationService.getUnpaidReservationsBefore(time); // Pobranie rezerwacji
+    for (Reservation reservation : reservations) {
+        reservationService.removeReservation(reservation); // Usunięcie każdej nieopłaconej rezerwacji
+    }
+}
+```
+
+---
+
+#### **Przykład działania:**
+
+**Założenia:**
+
+- Obecny czas: **2025-01-01T14:30:00**.
+- Rezerwacje w systemie:
+  ```json
+  [
+    {
+      "id": 1,
+      "paid": false,
+      "seans": {
+        "start": "2025-01-01T15:00:00"
+      }
+    },
+    {
+      "id": 2,
+      "paid": true,
+      "seans": {
+        "start": "2025-01-01T15:30:00"
+      }
+    },
+    {
+      "id": 3,
+      "paid": false,
+      "seans": {
+        "start": "2025-01-01T16:00:00"
+      }
+    }
+  ]
+  ```
+
+**Wynik działania:**
+
+1. Zadanie sprawdza rezerwacje, których czas rozpoczęcia jest mniejszy niż **2025-01-01T15:30:00** (obecny czas + 1 godzina).
+2. Rezerwacja o `id = 1` zostanie usunięta, ponieważ:
+   - Jest nieopłacona.
+   - Jej czas rozpoczęcia mieści się w określonym przedziale.
+3. Rezerwacje `id = 2` i `id = 3` pozostają w systemie.
+
+---
+
+### **SeansController**
+
+`SeansController` zajmuje się zarządzaniem seansami w systemie Multiplex. Umożliwia dodawanie nowych seansów, usuwanie istniejących, a także pobieranie listy seansów w zależności od określonych kryteriów, takich jak przedział czasowy, sala czy film.
+
+---
+
+#### **Dodanie nowego seansu**
+
+**Endpoint:**  
+`POST /api/seans/add`
+
+**Opis:**  
+Tworzy nowy seans na podstawie przesłanych danych. Sprawdza, czy sala jest dostępna w wybranym przedziale czasowym.
+
+**Treść żądania (`Request Body`):**
+
+| Nazwa pola | Typ        | Walidacja        | Opis                                   |
+| ---------- | ---------- | ---------------- | -------------------------------------- |
+| `movieId`  | Long       | Istniejący ID    | ID filmu, który ma zostać wyświetlony. |
+| `roomId`   | Long       | Istniejący ID    | ID sali, w której ma odbyć się seans.  |
+| `start`    | Timestamp  | Nie puste        | Data i godzina rozpoczęcia seansu.     |
+| `price`    | BigDecimal | Wartość dodatnia | Cena biletu na seans.                  |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Seans został pomyślnie dodany.  
+  Przykład odpowiedzi:
+
+  ```json
+  {
+    "message": "Seans added successful!"
+  }
+  ```
+
+- **Status 400 Bad Request:** Film lub sala nie istnieją.  
+  Przykład odpowiedzi:
+
+  ```json
+  {
+    "error": "There is not such movie"
+  }
+  ```
+
+- **Status 409 Conflict:** Sala jest zajęta w określonym przedziale czasowym.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "Room is not available in that time range"
+  }
+  ```
+
+---
+
+#### **Usunięcie seansu**
+
+**Endpoint:**  
+`DELETE /api/seans/{id}`
+
+**Opis:**  
+Usuwa seans z systemu na podstawie jego ID.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Seans został pomyślnie usunięty.
+
+---
+
+#### **Pobranie wszystkich seansów**
+
+**Endpoint:**  
+`GET /api/seans/all`
+
+**Opis:**  
+Zwraca listę wszystkich seansów dostępnych w systemie.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Lista wszystkich seansów.  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "id": 1,
+      "start": "2025-01-01T10:00:00",
+      "endTime": "2025-01-01T12:30:00",
+      "movie": {...},
+      "room": {...},
+      "price": 45.00
+    },
+    {...}
+  ]
+  ```
+
+---
+
+#### **Pobranie seansów w przedziale czasowym**
+
+**Endpoint:**  
+`GET /api/seans/all/between-dates`
+
+**Opis:**  
+Zwraca listę seansów odbywających się w określonym przedziale czasowym.
+
+**Treść żądania (`Request Body`):**
+
+| Nazwa pola | Typ       | Walidacja | Opis             |
+| ---------- | --------- | --------- | ---------------- |
+| `start`    | Timestamp | Nie puste | Data początkowa. |
+| `end`      | Timestamp | Nie puste | Data końcowa.    |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Lista seansów w określonym przedziale czasowym.  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "id": 1,
+      "start": "2025-01-01T10:00:00",
+      "endTime": "2025-01-01T12:30:00",
+      "movie": {...},
+      "room": {...},
+      "price": 45.00
+    },
+    {...}
+  ]
+  ```
+
+---
+
+#### **Pobranie seansów w przedziale czasowym w konkretnej sali**
+
+**Endpoint:**  
+`GET /api/seans/all/between-dates-room`
+
+**Opis:**  
+Zwraca listę seansów odbywających się w określonym przedziale czasowym w wybranej sali.
+
+**Treść żądania (`Request Body`):**
+
+| Nazwa pola | Typ       | Walidacja     | Opis             |
+| ---------- | --------- | ------------- | ---------------- |
+| `start`    | Timestamp | Nie puste     | Data początkowa. |
+| `end`      | Timestamp | Nie puste     | Data końcowa.    |
+| `roomId`   | Long      | Istniejący ID | ID sali.         |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Lista seansów w określonym przedziale czasowym w wybranej sali.  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "id": 1,
+      "start": "2025-01-01T10:00:00",
+      "endTime": "2025-01-01T12:30:00",
+      "movie": {...},
+      "room": {...},
+      "price": 45.00
+    },
+    {...}
+  ]
+  ```
+
+---
+
+#### **Pobranie seansów w przedziale czasowym dla konkretnego filmu**
+
+**Endpoint:**  
+`GET /api/seans/all/between-dates-movie`
+
+**Opis:**  
+Zwraca listę seansów odbywających się w określonym przedziale czasowym dla wybranego filmu.
+
+**Treść żądania (`Request Body`):**
+
+| Nazwa pola | Typ       | Walidacja     | Opis             |
+| ---------- | --------- | ------------- | ---------------- |
+| `start`    | Timestamp | Nie puste     | Data początkowa. |
+| `end`      | Timestamp | Nie puste     | Data końcowa.    |
+| `movieId`  | Long      | Istniejący ID | ID filmu.        |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Lista seansów w określonym przedziale czasowym dla wybranego filmu.  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "id": 1,
+      "start": "2025-01-01T10:00:00",
+      "endTime": "2025-01-01T12:30:00",
+      "movie": {...},
+      "room": {...},
+      "price": 45.00
+    },
+    {...}
+  ]
+  ```
 
 ---
 
@@ -183,12 +731,12 @@ Dodaje nowy film do systemu.
 
 **Treść żądania (`Request Body`):**
 
-| Nazwa pola | Typ         | Walidacja                  | Opis                            |
-| ---------- | ----------- | -------------------------- | ------------------------------- |
-| `title`    | String      | Nie puste                  | Tytuł filmu.                    |
-| `director` | String      | Nie puste                  | Reżyser filmu.                  |
-| `duration` | Integer     | Wartość dodatnia           | Czas trwania filmu w minutach.  |
-| `genreIds` | List\<Long> | Istniejące identyfikatory  | Lista ID przypisanych gatunków. |
+| Nazwa pola | Typ         | Walidacja                 | Opis                            |
+| ---------- | ----------- | ------------------------- | ------------------------------- |
+| `title`    | String      | Nie puste                 | Tytuł filmu.                    |
+| `director` | String      | Nie puste                 | Reżyser filmu.                  |
+| `duration` | Integer     | Wartość dodatnia          | Czas trwania filmu w minutach.  |
+| `genreIds` | List\<Long> | Istniejące identyfikatory | Lista ID przypisanych gatunków. |
 
 **Odpowiedź:**
 
@@ -218,6 +766,7 @@ Zwraca szczegóły filmu na podstawie jego ID.
 
 - **Status 200 OK:** Film został znaleziony.  
   Przykład odpowiedzi:
+
   ```json
   {
     "id": 1,
@@ -281,7 +830,7 @@ Usuwa film z systemu na podstawie ID.
 
 **Odpowiedź:**
 
-- **Status 200 OK:** Film został pomyślnie usunięty.  
+- **Status 200 OK:** Film został pomyślnie usunięty.
 
 - **Status 404 Not Found:** Film o podanym ID nie istnieje.  
   Przykład odpowiedzi:
@@ -303,12 +852,12 @@ Aktualizuje dane istniejącego filmu.
 
 **Treść żądania (`Request Body`):**
 
-| Nazwa pola | Typ         | Walidacja                  | Opis                            |
-| ---------- | ----------- | -------------------------- | ------------------------------- |
-| `title`    | String      | Nie puste                  | Tytuł filmu.                    |
-| `director` | String      | Nie puste                  | Reżyser filmu.                  |
-| `duration` | Integer     | Wartość dodatnia           | Czas trwania filmu w minutach.  |
-| `genreIds` | List\<Long> | Istniejące identyfikatory  | Lista ID przypisanych gatunków. |
+| Nazwa pola | Typ         | Walidacja                 | Opis                            |
+| ---------- | ----------- | ------------------------- | ------------------------------- |
+| `title`    | String      | Nie puste                 | Tytuł filmu.                    |
+| `director` | String      | Nie puste                 | Reżyser filmu.                  |
+| `duration` | Integer     | Wartość dodatnia          | Czas trwania filmu w minutach.  |
+| `genreIds` | List\<Long> | Istniejące identyfikatory | Lista ID przypisanych gatunków. |
 
 **Odpowiedź:**
 
@@ -340,9 +889,9 @@ Dodaje nową salę kinową do systemu.
 
 **Treść żądania (`Request Body`):**
 
-| Nazwa pola | Typ    | Walidacja   | Opis                       |
-| ---------- | ------ | ----------- | -------------------------- |
-| `name`     | String | Nie puste   | Nazwa sali kinowej.        |
+| Nazwa pola | Typ    | Walidacja   | Opis                          |
+| ---------- | ------ | ----------- | ----------------------------- |
+| `name`     | String | Nie puste   | Nazwa sali kinowej.           |
 | `capacity` | Int    | Wartość > 0 | Liczba miejsc w sali kinowej. |
 
 **Odpowiedź:**
@@ -371,6 +920,7 @@ Zwraca szczegóły sali na podstawie jej ID.
 
 - **Status 200 OK:** Sala została znaleziona.  
   Przykład odpowiedzi:
+
   ```json
   {
     "id": 1,
@@ -428,10 +978,10 @@ Aktualizuje dane istniejącej sali.
 
 **Treść żądania (`Request Body`):**
 
-| Nazwa pola | Typ    | Walidacja   | Opis                       |
-| ---------- | ------ | ----------- | -------------------------- |
-| `id`       | Long   | Nie puste   | ID sali.                   |
-| `name`     | String | Nie puste   | Nazwa sali kinowej.        |
+| Nazwa pola | Typ    | Walidacja   | Opis                          |
+| ---------- | ------ | ----------- | ----------------------------- |
+| `id`       | Long   | Nie puste   | ID sali.                      |
+| `name`     | String | Nie puste   | Nazwa sali kinowej.           |
 | `capacity` | Int    | Wartość > 0 | Liczba miejsc w sali kinowej. |
 
 **Odpowiedź:**
@@ -458,7 +1008,7 @@ Usuwa salę kinową z systemu na podstawie ID.
 
 **Odpowiedź:**
 
-- **Status 200 OK:** Sala została pomyślnie usunięta.  
+- **Status 200 OK:** Sala została pomyślnie usunięta.
 
 - **Status 404 Not Found:** Sala o podanym ID nie istnieje.  
   Przykład odpowiedzi:
@@ -486,6 +1036,7 @@ W celu lepszego zrozumienia, jak działa proces rejestracji i autoryzacji użytk
 
 3. **Walidacja danych:**  
    `AuthController` sprawdza poprawność wprowadzonych danych. Weryfikuje, czy:
+
    - Wszystkie pola są poprawnie wypełnione.
    - Podany e-mail nie istnieje już w systemie.
 
@@ -510,6 +1061,7 @@ W celu lepszego zrozumienia, jak działa proces rejestracji i autoryzacji użytk
 
 3. **Walidacja danych:**  
    `AuthController` przekazuje dane do `AuthenticationManager`, który jest konfigurowany w ramach Spring Security. `AuthenticationManager`:
+
    - Korzysta z `CustomUserDetailsService` do ładowania szczegółów użytkownika z bazy danych.
    - Sprawdza, czy użytkownik z podanym e-mailem istnieje.
    - Porównuje zaszyfrowane hasło wprowadzone przez użytkownika z hasłem przechowywanym w bazie danych przy użyciu mechanizmu Spring Security.
@@ -517,12 +1069,13 @@ W celu lepszego zrozumienia, jak działa proces rejestracji i autoryzacji użytk
 4. **Uwierzytelnienie:**  
    Jeśli dane logowania są poprawne, użytkownik zostaje uwierzytelniony i Spring Security tworzy dla niego sesję.
 
-5. **Odpowiedź do użytkownika:** 
+5. **Odpowiedź do użytkownika:**
    Po pomyślnym uwierzytelnieniu serwer zwraca odpowiedź potwierdzającą logowanie. W przypadku błędu (np. błędne hasło lub e-mail), użytkownik otrzymuje komunikat zwrotny.
 
 ---
 
 ### **Rola Spring Security w procesach rejestracji i logowania**
+
 - **Szyfrowanie haseł:** Dzięki `PasswordEncoder` hasła są przechowywane w bezpieczny sposób.
 - **Walidacja danych uwierzytelniających:** `AuthenticationManager` i `CustomUserDetailsService` umożliwiają weryfikację użytkowników i ich haseł.
 - **Ochrona punktów końcowych:** Spring Security zapewnia kontrolę dostępu do endpointów, umożliwiając dostęp do wybranych zasobów tylko po zalogowaniu.
