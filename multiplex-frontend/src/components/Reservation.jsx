@@ -25,7 +25,7 @@ const Reservation = ({reservation}) => {
                     borderRadius: 2,
                     overflow: "hidden",
                 }}>
-                    <Grid2 size={{sm: 4, xs: 12}}>
+                    <Grid2 size={{sm: 3, xs: 12}}>
                         <Box
                             component="img"
                             src="https://placehold.co/320x400"
@@ -41,10 +41,10 @@ const Reservation = ({reservation}) => {
                     <Grid2 item size={{sm: 5, xs: 12}} sx={{
                         padding: 2,
                         display: "flex",
-                        flexDirection: {xs: "row", sm: "column"},
+                        flexDirection: "column",
                         justifyContent: "space-between",
                     }}>
-                        <Box>
+                        <Grid2 size={12}>
                             <Typography variant="subtitle2" color="textSecondary">
                                 MOVIE TICKET
                             </Typography>
@@ -56,13 +56,20 @@ const Reservation = ({reservation}) => {
                                 {reservation.seans.movie.title}
                             </Typography>
                             <Typography variant="body2" sx={{mt: 1, mb: 2}}>
-                                123 Anywhere St., Any City
+                                123 Alekino St., Krakow
                             </Typography>
-                        </Box>
-                        <Grid2 container spacing={1} sx={{
+                            <Typography variant="caption" sx={{mt: 1, mb: 2}}>
+                                Owner: {reservation.user.firstName} {reservation.user.lastName}
+                            </Typography>
+
+                            {!reservation.paid&&(<Typography color={"error"} variant="body1" sx={{mt: 1, mb: 2}}>
+                                Not paid
+                            </Typography>)}
+                        </Grid2>
+                        <Grid2 container size={12} spacing={1} sx={{
                             mt: 1, mb: 2,
                             display: "flex",
-                            flexDirection: "row",
+                            flexDirection: {xs:"column",sm:"row"},
                             justifyContent: "space-between",
                         }}>
                             {[`Date: ${formattedDate}`, `Time: ${formattedTime}`, `PRICE: $${reservation.seans.price}`].map((text, index) => (
@@ -83,6 +90,7 @@ const Reservation = ({reservation}) => {
                             ))}
                         </Grid2>
                     </Grid2>
+                    <Grid2 size ={1}></Grid2>
                     <Grid2
                         size={{sm: 1, xs: 12}}
                         sx={{

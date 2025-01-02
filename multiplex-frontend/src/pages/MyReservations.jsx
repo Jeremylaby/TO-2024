@@ -206,7 +206,7 @@ const MyReservations = () => {
                     <TableContainer component={Paper}>
                         <Table>
 
-                            <TableBody>
+                            <TableBody  >
                                 {reservations.map((reservation) => (
 
                                         <Reservation reservation={reservation} key={reservation.id}/>
