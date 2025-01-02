@@ -10,6 +10,7 @@ import pl.agh.droptable.multiplex.dto.request.FindSeansRequest;
 import pl.agh.droptable.multiplex.model.Movie;
 import pl.agh.droptable.multiplex.model.Room;
 import pl.agh.droptable.multiplex.model.Seans;
+import pl.agh.droptable.multiplex.model.Seat;
 import pl.agh.droptable.multiplex.service.MovieService;
 import pl.agh.droptable.multiplex.service.RoomService;
 import pl.agh.droptable.multiplex.service.SeansService;
@@ -68,6 +69,17 @@ public class SeansController {
 
         return ResponseEntity.ok(Map.of("message", "Seans added successful!"));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getSeans(@PathVariable Long id) {
+        Optional<Seans> seans = seansService.getSeansById(id);
+        if (seans.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "There is not such seanse"));
+        }
+        return ResponseEntity.ok(seans.get());
+    }
+
     @DeleteMapping({"/{id}"})
     public void deleteSeans(@PathVariable("id") Long id) {
         seansService.deleteSeans(id);
@@ -91,6 +103,22 @@ public class SeansController {
     public ResponseEntity<List<Seans>> getBetweenDatesMovie(FindSeansRequest request) {
         List<Seans> seansList = seansService.getAllSeans(request.getStart(), request.getEnd(), request.getMovieId());
         return ResponseEntity.ok(seansList);
+    }
+    @GetMapping("/currently-playing")
+    public ResponseEntity<List<Movie>> getCurrentlyPlayingMovies() {
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+        List<Seans> upcomingSeans = seansService.getAllSeansFrom(now);
+        List<Movie> movies = upcomingSeans.stream()
+                .map(Seans::getMovie)
+                .distinct()
+                .toList();
+        return ResponseEntity.ok(movies);
+    }
+
+    @GetMapping("/{id}/seats")
+    public ResponseEntity<List<Seat>> getFreeSeats(@PathVariable("id") Long seansId) {
+        List<Seat> freeSeats = seansService.getFreeSeats(seansId);
+        return ResponseEntity.ok(freeSeats);
     }
 
 }
