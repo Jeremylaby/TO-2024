@@ -774,6 +774,114 @@ Zwraca listę seansów odbywających się w określonym przedziale czasowym dla 
 
 ---
 
+#### **Pobranie szczegółów seansu**
+
+**Endpoint:**  
+`GET /seans/{id}`
+
+**Opis:**  
+Zwraca szczegóły seansu na podstawie jego ID.
+
+**Parametry:**  
+
+| Nazwa parametru | Typ  | Walidacja | Opis                                |
+| --------------- | ---- | --------- | ----------------------------------- |
+| `id`            | Long | Nie puste | Unikalny identyfikator seansu.      |
+
+**Odpowiedź:**  
+
+- **Status 200 OK:** Szczegóły seansu.  
+  Przykład odpowiedzi:  
+  ```json
+  {
+    "id": 1,
+    "movieId": 101,
+    "startTime": "2025-01-02T14:00:00",
+    "endTime": "2025-01-02T16:30:00",
+    "roomName": "Room A",
+    "movie": {
+      "id": 101,
+      "title": "Inception",
+      "duration": 148,
+      "genres": ["Sci-Fi", "Thriller"]
+    }
+  }
+  ```
+
+- **Status 404 Not Found:** Seans o podanym ID nie istnieje.
+ 
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "There is not such seanse"
+  }
+  ```
+---
+
+#### **Pobranie listy filmów obecnie granych**
+
+**Endpoint:**  
+`GET /seans/currently-playing`
+
+**Opis:**  
+Zwraca listę filmów, które są obecnie grane w kinie.
+
+**Odpowiedź:**  
+
+- **Status 200 OK:** Lista filmów obecnie granych.  
+  Przykład odpowiedzi:  
+  ```json
+  [
+    {
+      "id": 101,
+      "title": "Inception",
+      "duration": 148,
+      "genres": ["Sci-Fi", "Thriller"]
+    },
+    {
+      "id": 102,
+      "title": "The Dark Knight",
+      "duration": 152,
+      "genres": ["Action", "Drama"]
+    }
+  ]
+  ```
+---
+
+#### **Pobranie listy wolnych miejsc na seans**
+
+**Endpoint:**  
+`GET /seans/{id}/seats`
+
+**Opis:**  
+Zwraca listę wolnych miejsc na wybrany seans.
+
+**Parametry:**  
+
+| Nazwa parametru | Typ  | Walidacja | Opis                                |
+| --------------- | ---- | --------- | ----------------------------------- |
+| `id`            | Long | Nie puste | Unikalny identyfikator seansu.      |
+
+**Odpowiedź:**  
+
+- **Status 200 OK:** Lista wolnych miejsc na seans.  
+  Przykład odpowiedzi:  
+  ```json
+  [
+    {
+      "id": 1,
+      "row": 5,
+      "seatNumber": 10
+    },
+    {
+      "id": 2,
+      "row": 5,
+      "seatNumber": 11
+    }
+  ]
+  ```
+---
+
 ### `MovieController`
 
 `MovieController` zajmuje się zarządzaniem filmami w systemie Multiplex. Oferuje punkty końcowe do dodawania, pobierania, aktualizacji oraz usuwania informacji o filmach.
@@ -929,6 +1037,44 @@ Aktualizuje dane istniejącego filmu.
     "genres": ["Updated Genre"]
   }
   ```
+
+---
+
+#### **Pobranie listy seansów dla filmu**
+
+**Endpoint:**  
+`GET /movie/seanses/{id}`
+
+**Opis:**  
+Zwraca listę wszystkich seansów powiązanych z filmem o określonym ID.
+
+**Parametry:**  
+
+| Nazwa parametru | Typ  | Walidacja | Opis                                |
+| --------------- | ---- | --------- | ----------------------------------- |
+| `id`            | Long | Nie puste | Unikalny identyfikator filmu.       |
+
+**Odpowiedź:**  
+
+- **Status 200 OK:** Lista seansów dla filmu.  
+  Przykład odpowiedzi:  
+  ```json
+  [
+    {
+      "id": 1,
+      "movieId": 101,
+      "startTime": "2025-01-02T14:00:00",
+      "endTime": "2025-01-02T16:30:00",
+      "roomName": "Room A"
+    },
+    {
+      "id": 2,
+      "movieId": 101,
+      "startTime": "2025-01-02T18:00:00",
+      "endTime": "2025-01-02T20:30:00",
+      "roomName": "Room B"
+    }
+  ]
 
 ---
 
