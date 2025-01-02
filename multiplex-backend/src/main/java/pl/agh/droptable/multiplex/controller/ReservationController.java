@@ -78,8 +78,16 @@ public class ReservationController {
             reservation.setPrice(seans.getPrice());
             reservations.add(reservation);
         }
+
         reservationService.addReservations(reservations);
-        return ResponseEntity.ok(Map.of("message", "Reservation added successfully!"));
+        List<Long> reservationIds = reservations.stream()
+                .map(Reservation::getId)
+                .toList();
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Reservations added successfully!",
+                "reservationIds", reservationIds
+        ));
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getReservationById(@PathVariable("id") Long id) {
