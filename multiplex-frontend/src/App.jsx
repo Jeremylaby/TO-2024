@@ -9,6 +9,7 @@ import SignUp from "./pages/SignUp.jsx";
 import Unauthorized from "./pages/Unauthorized.jsx";
 import UserList from "./pages/UserList.jsx";
 import Home from "./pages/Home.jsx";
+import MyReservations from "./pages/MyReservations.jsx";
 const roles = {
   ADMIN: 2,
   WORKER: 1,
@@ -23,6 +24,7 @@ function App() {
           <Route path={"/login"} element={<Login />} />
           <Route path={"/signup"} element={<SignUp />} />
           <Route path={"/account"} element={<Account />} />
+          <Route path={"/account/reservations"} element={<MyReservations/>}/>
           <Route
             path={"/admin/users"}
             element={
