@@ -19,6 +19,8 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
 
+    private int permissionLevel;
+
     public User() {
     }
 
@@ -99,5 +101,13 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public int getPermissionLevel() {
+        return permissionLevel;
+    }
+
+    public void setPermissionLevel(int permissionLevel) {
+        this.permissionLevel = permissionLevel;
     }
 }
