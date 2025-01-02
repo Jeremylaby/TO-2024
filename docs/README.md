@@ -170,7 +170,7 @@ Usuwa istniejącego użytkownika z systemu na podstawie id.
 
 ### `ReservationController`
 
-`ReservationController` obsługuje rezerwacje w systemie Multiplex. Oferuje punkty końcowe do tworzenia, usuwania, aktualizacji oraz pobierania informacji o rezerwacjach. Wspiera również mechanizm harmonogramowania, który automatycznie usuwa nieopłacone rezerwacje.
+`ReservationController` obsługuje rezerwacje w systemie Multiplex. Oferuje punkty końcowe do tworzenia, usuwania, aktualizacji oraz pobierania informacji o rezerwacjach, zwracając dane w formacie `ReservationDTO`. Wspiera również mechanizm harmonogramowania, który automatycznie usuwa nieopłacone rezerwacje.
 
 ---
 
@@ -315,26 +315,43 @@ Ustawia status rezerwacji na opłaconą.
 #### **Pobranie rezerwacji użytkownika**
 
 **Endpoint:**  
-`GET /api/reservation/user/{id}`
+`GET /user/{id}`
 
 **Opis:**  
-Zwraca listę rezerwacji użytkownika na podstawie jego ID.
+Zwraca listę rezerwacji dla danego użytkownika na podstawie jego ID.
+
+**Parametry:**
+
+| Nazwa parametru | Typ  | Walidacja | Opis                                |
+| --------------- | ---- | --------- | ----------------------------------- |
+| `id`            | Long | Nie puste | Unikalny identyfikator użytkownika. |
 
 **Odpowiedź:**
 
-- **Status 200 OK:** Lista rezerwacji użytkownika.  
+- **Status 200 OK:** Lista rezerwacji w formacie `ReservationDTO`.  
   Przykład odpowiedzi:
   ```json
   [
     {
       "id": 1,
       "paid": true,
-      "user": {...},
-      "seat": {...},
-      "seans": {...},
-      "price": 45.00
-    },
-    {...}
+      "userId": 1001,
+      "firstName": "John",
+      "lastName": "Doe",
+      "row": 5,
+      "seatNumber": 10,
+      "roomName": "Room A",
+      "price": 20.5,
+      "start": "2025-01-01T18:00:00",
+      "endTime": "2025-01-01T20:00:00",
+      "movie": {
+        "id": 101,
+        "title": "Inception",
+        "director": "Christopher Nolan",
+        "duration": 148,
+        "genres": ["Sci-Fi", "Thriller"]
+      }
+    }
   ]
   ```
 
@@ -343,10 +360,10 @@ Zwraca listę rezerwacji użytkownika na podstawie jego ID.
 #### **Pobranie wszystkich rezerwacji**
 
 **Endpoint:**  
-`GET /api/reservation/all`
+`GET /all`
 
 **Opis:**  
-Zwraca listę wszystkich rezerwacji w systemie.
+Zwraca listę wszystkich rezerwacji w systemie w formacie `ReservationDTO`.
 
 **Odpowiedź:**
 
@@ -357,79 +374,119 @@ Zwraca listę wszystkich rezerwacji w systemie.
     {
       "id": 1,
       "paid": true,
-      "user": {...},
-      "seat": {...},
-      "seans": {...},
-      "price": 45.00
-    },
-    {...}
+      "userId": 1001,
+      "firstName": "John",
+      "lastName": "Doe",
+      "row": 5,
+      "seatNumber": 10,
+      "roomName": "Room A",
+      "price": 20.5,
+      "start": "2025-01-01T18:00:00",
+      "endTime": "2025-01-01T20:00:00",
+      "movie": {
+        "id": 101,
+        "title": "Inception",
+        "director": "Christopher Nolan",
+        "duration": 148,
+        "genres": ["Sci-Fi", "Thriller"]
+      }
+    }
   ]
   ```
 
 ---
 
-#### **Pobranie rezerwacji dzisiejszych**
+#### **Pobranie dzisiejszych rezerwacji**
 
 **Endpoint:**  
-`GET /api/reservation/all/today`
+`GET /all/today`
 
 **Opis:**  
-Zwraca listę rezerwacji, które odbywają się w dniu dzisiejszym.
+Zwraca listę rezerwacji złożonych na dzisiejsze seanse.
 
 **Odpowiedź:**
 
-- **Status 200 OK:** Lista dzisiejszych rezerwacji.  
+- **Status 200 OK:** Lista dzisiejszych rezerwacji w formacie `ReservationDTO`.  
   Przykład odpowiedzi:
   ```json
   [
     {
-      "id": 1,
-      "paid": true,
-      "user": {...},
-      "seat": {...},
-      "seans": {...},
-      "price": 45.00
-    },
-    {...}
+      "id": 2,
+      "paid": false,
+      "userId": 1002,
+      "firstName": "Alice",
+      "lastName": "Smith",
+      "row": 3,
+      "seatNumber": 8,
+      "roomName": "Room B",
+      "price": 15.0,
+      "start": "2025-01-01T15:00:00",
+      "endTime": "2025-01-01T17:00:00",
+      "movie": {
+        "id": 102,
+        "title": "Interstellar",
+        "director": "Christopher Nolan",
+        "duration": 169,
+        "genres": ["Sci-Fi", "Drama"]
+      }
+    }
   ]
   ```
 
 ---
 
-#### **Pobranie rezerwacji z zakresu dat**
+#### **Pobranie rezerwacji w zakresie czasowym**
 
 **Endpoint:**  
-`GET /api/reservation/all/time-range`
+`GET /all/time-range`
 
 **Opis:**  
-Zwraca listę rezerwacji z określonego przedziału czasowego.
+Zwraca listę rezerwacji w podanym zakresie czasowym.
 
 **Treść żądania (`Request Body`):**
 
-| Nazwa pola | Typ    | Walidacja | Opis              |
-| ---------- | ------ | --------- | ----------------- |
-| `start`    | String | Nie puste | Początek zakresu. |
-| `end`      | String | Nie puste | Koniec zakresu.   |
+| Nazwa pola | Typ       | Walidacja | Opis                        |
+| ---------- | --------- | --------- | --------------------------- |
+| `start`    | Timestamp | Nie puste | Początek zakresu czasowego. |
+| `end`      | Timestamp | Nie puste | Koniec zakresu czasowego.   |
 
 **Odpowiedź:**
 
-- **Status 200 OK:** Lista rezerwacji z zakresu.  
+- **Status 200 OK:** Lista rezerwacji w podanym zakresie czasowym w formacie `ReservationDTO`.  
   Przykład odpowiedzi:
   ```json
   [
     {
-      "id": 1,
+      "id": 3,
       "paid": true,
-      "user": {...},
-      "seat": {...},
-      "seans": {...},
-      "price": 45.00
-    },
-    {...}
+      "userId": 1003,
+      "firstName": "Bob",
+      "lastName": "Johnson",
+      "row": 2,
+      "seatNumber": 12,
+      "roomName": "Room C",
+      "price": 18.0,
+      "start": "2025-01-01T10:00:00",
+      "endTime": "2025-01-01T12:00:00",
+      "movie": {
+        "id": 103,
+        "title": "The Dark Knight",
+        "director": "Christopher Nolan",
+        "duration": 152,
+        "genres": ["Action", "Crime"]
+      }
+    }
   ]
   ```
 
 ---
+
+### Wyjaśnienie
+
+- **Zmiana odpowiedzi na `ReservationDTO`**:
+  Wszystkie endpointy zwracają teraz DTO, co zapewnia lepszą enkapsulację danych i eliminuje niepotrzebne szczegóły.
+- **Przykłady odpowiedzi**:
+  Każda odpowiedź jest dostosowana do struktury `ReservationDTO`.
 
 ### **Automatyczne usuwanie nieopłaconych rezerwacji**
 
@@ -1041,6 +1098,7 @@ Dodaje nowe miejsce do istniejącej sali w systemie.
 
 - **Status 200 OK:** Miejsce dodane pomyślnie.  
   Przykład odpowiedzi:
+
   ```json
   {
     "message": "Seat added successfully!"
@@ -1054,7 +1112,6 @@ Dodaje nowe miejsce do istniejącej sali w systemie.
     "error": "Room with provided name could not be found."
   }
   ```
-  
 - **Status 409 Conflict:** Miejsce o podanym numerze i rzędzie już istnieje w sali.  
   Przykład odpowiedzi:
   ```json
