@@ -2,6 +2,7 @@ package pl.agh.droptable.multiplex.model;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
@@ -10,12 +11,23 @@ public class Seans {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Timestamp start;
+    private Timestamp endTime;
     @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movie movie;
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 
     public Room getRoom() {
         return room;
@@ -39,5 +51,32 @@ public class Seans {
 
     public Long getId() {
         return id;
+    }
+
+    public Timestamp getStart() {
+        return start;
+    }
+
+    public void setStart(Timestamp start) {
+        this.start = start;
+    }
+
+    public Timestamp getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Seans{" +
+                "id=" + id +
+                ", start=" + start +
+                ", endTime=" + endTime +
+                ", movie=" + movie +
+                ", room=" + room +
+                '}';
     }
 }

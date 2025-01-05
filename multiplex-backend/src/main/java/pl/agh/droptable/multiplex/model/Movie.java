@@ -13,6 +13,7 @@ public class Movie {
     private String title;
     private String director;
     private int duration;
+    private String imageUrl;
     @ManyToMany
     private List<Genre> genres;
 
@@ -53,11 +54,23 @@ public class Movie {
         this.duration = duration;
     }
 
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
+    public String getImageUrl() { return imageUrl; }
+
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Movie movie = (Movie) o;
-        return duration == movie.duration && Objects.equals(id, movie.id) && Objects.equals(title, movie.title) && Objects.equals(director, movie.director);
+        return duration == movie.duration && Objects.equals(id, movie.id) && Objects.equals(title, movie.title) && Objects.equals(director, movie.director) && Objects.equals(imageUrl, movie.imageUrl);
     }
 
     @Override
