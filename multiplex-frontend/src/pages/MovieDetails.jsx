@@ -12,6 +12,7 @@ import {
   CardContent,
   Box,
   Button,
+  Modal,
   Grid2,
 } from "@mui/material";
 
@@ -28,6 +29,7 @@ const MovieDetails = () => {
     },
   ]);
   const [error, setError] = useState(null);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const customStaticRanges = defaultStaticRanges.filter((range) =>
     ["Today", "This Week", "This Month"].includes(range.label)
@@ -80,6 +82,7 @@ const MovieDetails = () => {
       }
       const data = await response.json();
       setSeanses(data);
+      setIsCalendarOpen(false);
     } catch (error) {
       setError(error.message);
     }
@@ -108,14 +111,14 @@ const MovieDetails = () => {
                   borderRadius: "8px",
                 }}
               />
-              <Box>
+              <Box sx={{ textAlign: "left" }}>
                 <Typography variant="h4" fontWeight="bold" gutterBottom>
                   {movie.title}
                 </Typography>
-                <Typography variant="body1" sx={{ mb: 2 }}>
+                <Typography variant="body1">
                   <strong>Director:</strong> {movie.director}
                 </Typography>
-                <Typography variant="body1" sx={{ mb: 2 }}>
+                <Typography variant="body1">
                   <strong>Duration:</strong> {movie.duration} min
                 </Typography>
                 <Typography variant="body1">{movie.description}</Typography>
@@ -125,28 +128,54 @@ const MovieDetails = () => {
         )}
 
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" gutterBottom>
-            Select date range:
-          </Typography>
-          <Box
-            sx={{
-              display: "inline-block",
-              transform: "scale(0.9)",
-              transformOrigin: "top left",
-            }}
+          <Button
+            variant="contained"
+            onClick={() => setIsCalendarOpen(true)}
           >
-            <DateRangePicker
-              ranges={dateRange}
-              onChange={(ranges) => setDateRange([ranges.selection])}
-              moveRangeOnFirstSelection={false}
-              minDate={new Date()}
-              staticRanges={customStaticRanges}
-              inputRanges={[]}
-            />
-          </Box>
-          <Button variant="contained" sx={{ mt: 2 }} onClick={applyFilter}>
-            Apply Filter
+            Select Date Range
           </Button>
+
+          <Modal
+            open={isCalendarOpen}
+            onClose={() => setIsCalendarOpen(false)}
+            sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+          >
+            <Box
+              sx={{
+                backgroundColor: "white",
+                p: 4,
+                borderRadius: "8px",
+                boxShadow: 24,
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                Select date range:
+              </Typography>
+              <DateRangePicker
+                ranges={dateRange}
+                onChange={(ranges) => setDateRange([ranges.selection])}
+                moveRangeOnFirstSelection={false}
+                minDate={new Date()}
+                staticRanges={customStaticRanges}
+                inputRanges={[]}
+              />
+              <Box sx={{ mt: 2, textAlign: "right" }}>
+                <Button
+                  variant="contained"
+                  onClick={applyFilter}
+                  sx={{ mr: 2 }}
+                >
+                  Apply
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => setIsCalendarOpen(false)}
+                >
+                  Cancel
+                </Button>
+              </Box>
+            </Box>
+          </Modal>
         </Box>
 
         <Typography variant="h5" fontWeight="bold" gutterBottom>
