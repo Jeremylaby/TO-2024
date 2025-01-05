@@ -1,5 +1,7 @@
 package pl.agh.droptable.multiplex.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.stereotype.Service;
 import pl.agh.droptable.multiplex.model.Room;
 import pl.agh.droptable.multiplex.model.Seans;
@@ -63,7 +65,7 @@ public class SeansService {
         return seansRepository.findAllByMovieId(movieId);
     }
 
-    public List<Seat> getFreeSeats(Long seansId) {
+    public List<ObjectNode> getFreeSeats(Long seansId) {
         Seans seans = seansRepository.findById(seansId).orElse(null);
 
         if (seans == null) {
@@ -74,9 +76,17 @@ public class SeansService {
         Room room = seans.getRoom();
         List<Seat> allSeats = seatRepository.findAllByRoomId(room.getId());
 
+        ObjectMapper mapper = new ObjectMapper();
+
         return allSeats.stream()
-                .filter(seat -> !reservationService.isSeatTaken(seansId, seat.getId()))
+                .map(seat -> {
+                    ObjectNode seatJson = mapper.createObjectNode();
+                    seatJson.put("id", seat.getId());
+                    seatJson.put("row", seat.getRow());
+                    seatJson.put("seatNumber", seat.getSeatNumber());
+                    seatJson.put("isReserved", reservationService.isSeatTaken(seansId, seat.getId()));
+                    return seatJson;
+                })
                 .collect(Collectors.toList());
     }
-
 }

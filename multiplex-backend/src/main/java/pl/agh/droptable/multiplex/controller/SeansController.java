@@ -1,5 +1,6 @@
 package pl.agh.droptable.multiplex.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -10,7 +11,6 @@ import pl.agh.droptable.multiplex.dto.request.FindSeansRequest;
 import pl.agh.droptable.multiplex.model.Movie;
 import pl.agh.droptable.multiplex.model.Room;
 import pl.agh.droptable.multiplex.model.Seans;
-import pl.agh.droptable.multiplex.model.Seat;
 import pl.agh.droptable.multiplex.service.MovieService;
 import pl.agh.droptable.multiplex.service.RoomService;
 import pl.agh.droptable.multiplex.service.SeansService;
@@ -116,8 +116,8 @@ public class SeansController {
     }
 
     @GetMapping("/{id}/seats")
-    public ResponseEntity<List<Seat>> getFreeSeats(@PathVariable("id") Long seansId) {
-        List<Seat> freeSeats = seansService.getFreeSeats(seansId);
+    public ResponseEntity<List<ObjectNode>> getFreeSeats(@PathVariable("id") Long seansId) {
+        List<ObjectNode> freeSeats = seansService.getFreeSeats(seansId);
         return ResponseEntity.ok(freeSeats);
     }
 
