@@ -30,4 +30,12 @@ public class Rate {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public int getRate() {
+        return rate;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
+    }
 }
