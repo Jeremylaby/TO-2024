@@ -76,13 +76,13 @@ public class MovieController {
         return movieRepository.saveAndFlush(movie);
     }
 
-    @GetMapping("/recommendations/rating")
+    @PostMapping("/recommendations/rating")
     public ResponseEntity<?> getMovieRecommendations(@RequestBody GetRecommendationRequest request) {
         Timestamp startTimestamp = request.getStartTimestamp();
         Timestamp endTimestamp = request.getEndTimestamp();
 
         if (startTimestamp == null || endTimestamp == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "startTimestamp and endTimestamp cannot be null"));
         }
 
