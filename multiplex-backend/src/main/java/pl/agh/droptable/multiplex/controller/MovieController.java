@@ -15,6 +15,7 @@ import pl.agh.droptable.multiplex.model.Movie;
 import pl.agh.droptable.multiplex.repository.GenreRepository;
 import pl.agh.droptable.multiplex.repository.MovieRepository;
 import pl.agh.droptable.multiplex.model.Seans;
+import pl.agh.droptable.multiplex.repository.RateRepository;
 import pl.agh.droptable.multiplex.service.MovieRecommendationService;
 import pl.agh.droptable.multiplex.service.SeansService;
 

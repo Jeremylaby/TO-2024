@@ -35,14 +35,6 @@ public class Rate {
         this.user = user;
     }
 
-    public int getRate() {
-        return rate;
-    }
-
-    public void setRate(int rate) {
-        this.rate = rate;
-    }
-
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
