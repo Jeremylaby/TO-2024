@@ -15,6 +15,10 @@ public class Rate {
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
+    public int getRate() { return rate; }
+
+    public void setRate(int rate) { this.rate = rate; }
+
     public Movie getMovie() {
         return movie;
     }
