@@ -15,6 +15,7 @@ import pl.agh.droptable.multiplex.model.Movie;
 import pl.agh.droptable.multiplex.repository.GenreRepository;
 import pl.agh.droptable.multiplex.repository.MovieRepository;
 import pl.agh.droptable.multiplex.model.Seans;
+import pl.agh.droptable.multiplex.repository.RateRepository;
 import pl.agh.droptable.multiplex.service.MovieRecommendationService;
 import pl.agh.droptable.multiplex.service.SeansService;
 
@@ -31,12 +32,14 @@ public class MovieController {
     private final GenreRepository genreRepository;
     private final SeansService seansService;
     private final MovieRecommendationService movieRecommendationService;
+    private final RateRepository rateRepository;
 
-    public MovieController(MovieRepository movieRepository, GenreRepository genreRepository, SeansService seansService, MovieRecommendationService movieRecommendationService) {
+    public MovieController(MovieRepository movieRepository, GenreRepository genreRepository, SeansService seansService, MovieRecommendationService movieRecommendationService, RateRepository rateRepository) {
         this.movieRepository = movieRepository;
         this.genreRepository = genreRepository;
         this.seansService = seansService;
         this.movieRecommendationService = movieRecommendationService;
+        this.rateRepository = rateRepository;
     }
 
     @PostMapping
@@ -102,5 +105,19 @@ public class MovieController {
 
         List<Movie> recommendedMovies = movieRecommendationService.recommendMoviesBySales(startTimestamp, endTimestamp);
         return ResponseEntity.ok(recommendedMovies);
+    }
+    @GetMapping("/ratings")
+    public ResponseEntity<List<Map<String, Object>>> getMoviesWithRatings() {
+        List<Movie> movies = movieRepository.findAll();
+        List<Map<String, Object>> moviesWithRatings = movies.stream()
+                .map(movie -> {
+                    Double averageRating = rateRepository.findAverageByMovieId(movie.getId());
+                    return Map.of(
+                            "movie", movie,
+                            "averageRating", averageRating != null ? averageRating : "N/A"
+                    );
+                })
+                .toList();
+        return ResponseEntity.ok(moviesWithRatings);
     }
 }
