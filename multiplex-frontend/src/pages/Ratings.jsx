@@ -188,18 +188,31 @@ const Ratings = () => {
           </List>
         )}
 
-        <Dialog open={openDialog} onClose={handleCloseDialog}>
-          <DialogTitle>Add Your Rating</DialogTitle>
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          fullWidth
+          maxWidth="xs"
+        >
+          <DialogTitle>Add your rating</DialogTitle>
           <DialogContent>
             <Typography>
-              {selectedMovie ? `Rating for: ${selectedMovie.title}` : ""}
+              {selectedMovie ? `Movie: ${selectedMovie.title}` : ""}
             </Typography>
-            <Rating
-              name="user-rating"
-              value={ratingValue}
-              onChange={(event, newValue) => setRatingValue(newValue)}
-              size="large"
-            />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "16px",
+              }}
+            >
+              <Rating
+                name="user-rating"
+                value={ratingValue}
+                onChange={(event, newValue) => setRatingValue(newValue)}
+                size="large"
+              />
+            </div>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog}>Cancel</Button>

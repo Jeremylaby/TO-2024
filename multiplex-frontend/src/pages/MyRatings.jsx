@@ -174,11 +174,16 @@ const Ratings = () => {
           </List>
         )}
 
-        <Dialog open={openDialog} onClose={handleCloseDialog}>
-          <DialogTitle>Delete Your Rating</DialogTitle>
+        <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        fullWidth 
+        maxWidth="xs"
+        >
+          <DialogTitle>Delete your rating</DialogTitle>
           <DialogContent>
             <Typography>
-              {selectedMovie ? `Deleting your rate for: ${selectedMovie.title}` : ""}
+              {selectedMovie ? `Movie: ${selectedMovie.title}` : ""}
             </Typography>
           </DialogContent>
           <DialogActions>
