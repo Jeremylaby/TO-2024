@@ -1090,7 +1090,55 @@ Zwraca listę wszystkich seansów powiązanych z filmem o określonym ID.
 `POST movie/recommendations/rating`
 
 **Opis:**  
-Zwraca listę filmów rekomendowanych na podstawie średnich ocen filmów pomiędzy podanymi datami rozpoczęcia i zakończenia.
+Zwraca listę filmów, z podanego przedziału czasowego, rekomendowanych na podstawie średnich ocen filmów.
+
+**Treść żądania (`Request Body`):**
+| Nazwa pola | Typ | Walidacja | Opis |
+| ----------------- | ----------- | -------------------------- | --------------------------------------- |
+| `startTimestamp` | Timestamp | Nie może być puste | Czas rozpoczęcia zakresu czasowego. |
+| `endTimestamp` | Timestamp | Nie może być puste | Czas zakończenia zakresu czasowego. |
+
+**Odpowiedź:**
+
+- **Status 200 OK:**  
+  Przykład odpowiedzi:
+
+  ```json
+  [
+    {
+      "id": 1,
+      "title": "Inception",
+      "director": "Christopher Nolan",
+      "duration": 148,
+      "genres": ["Sci-Fi", "Thriller"]
+    },
+    {
+      "id": 2,
+      "title": "Interstellar",
+      "director": "Christopher Nolan",
+      "duration": 169,
+      "genres": ["Sci-Fi", "Drama"]
+    }
+  ]
+  ```
+
+- **Status 400 Bad request:**  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "startTimestamp and endTimestamp cannot be null"
+  }
+  ```
+
+---
+
+#### **Pobranie listy rekomendowanych filmów na podstawie sprzedanych biletów**
+
+**Endpoint:**  
+`POST movie/recommendations/sales`
+
+**Opis:**  
+Zwraca listę filmów, z podanego przedziału czasowego, rekomendowanych na podstawie ilości sprzedanych biletów na film.
 
 **Treść żądania (`Request Body`):**
 | Nazwa pola | Typ | Walidacja | Opis |

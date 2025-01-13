@@ -77,7 +77,7 @@ public class MovieController {
     }
 
     @PostMapping("/recommendations/rating")
-    public ResponseEntity<?> getMovieRecommendations(@RequestBody GetRecommendationRequest request) {
+    public ResponseEntity<?> getMovieRecommendationsByRating(@RequestBody GetRecommendationRequest request) {
         Timestamp startTimestamp = request.getStartTimestamp();
         Timestamp endTimestamp = request.getEndTimestamp();
 
@@ -86,7 +86,21 @@ public class MovieController {
                     .body(Map.of("error", "startTimestamp and endTimestamp cannot be null"));
         }
 
-        List<Movie> recommendedMovies = movieRecommendationService.recommendMoviesBetweenTimestamps(startTimestamp, endTimestamp);
+        List<Movie> recommendedMovies = movieRecommendationService.recommendMoviesByRating(startTimestamp, endTimestamp);
+        return ResponseEntity.ok(recommendedMovies);
+    }
+
+    @PostMapping("/recommendations/sales")
+    public ResponseEntity<?> getMovieRecommendationsBySales(@RequestBody GetRecommendationRequest request) {
+        Timestamp startTimestamp = request.getStartTimestamp();
+        Timestamp endTimestamp = request.getEndTimestamp();
+
+        if (startTimestamp == null || endTimestamp == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "startTimestamp and endTimestamp cannot be null"));
+        }
+
+        List<Movie> recommendedMovies = movieRecommendationService.recommendMoviesBySales(startTimestamp, endTimestamp);
         return ResponseEntity.ok(recommendedMovies);
     }
 }
