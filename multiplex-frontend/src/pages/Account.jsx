@@ -21,6 +21,11 @@ const Account = () => {
     const navigateToReservations = () => {
         navigate('/account/reservations');
     };
+
+    const navigateToRatigs = () => {
+        navigate('/account/ratings');
+    };
+
     const remove = async (user) => {
         await fetch(`/api/user/${user.id}`, {
             method: "DELETE",
@@ -105,9 +110,14 @@ const Account = () => {
                                             sx={{ cursor: "pointer" }}
                                             primary="Reservations"/>
                                     </ListItem>
-                                    <Divider/>
+                                    <Divider />
                                     <ListItem>
-                                        <ListItemText primary="More options..."/>
+                                        {/* Nowy element Ratings */}
+                                        <ListItemText
+                                        onClick={() => navigate('/account/ratings')}
+                                        sx={{ cursor: "pointer" }}
+                                        primary="Ratings"
+                                        />
                                     </ListItem>
                                     <Divider/>
                                     <ListItem>

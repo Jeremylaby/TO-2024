@@ -31,7 +31,7 @@ public class RateController {
 
     @PostMapping
     public ResponseEntity<?> addRate(@RequestBody AddRateRequest request) {
-        Optional<User> optionalUser = userRepository.findById(request.getUser().getId());
+        Optional<User> optionalUser = userRepository.findById(request.getUserId());
 
         if (optionalUser.isEmpty()) {
             Map<String, String> errorResponse = new HashMap<>();
@@ -39,7 +39,7 @@ public class RateController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
 
-        Optional<Movie> optionalMovie = movieRepository.findById(request.getMovie().getId());
+        Optional<Movie> optionalMovie = movieRepository.findById(request.getMovieId());
 
         if (optionalMovie.isEmpty()) {
             Map<String, String> errorResponse = new HashMap<>();
@@ -47,10 +47,20 @@ public class RateController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
 
+        User user = optionalUser.get();
+        Movie movie = optionalMovie.get();
+
+        boolean alreadyRated = rateRepository.existsByUserIdAndMovieId(user.getId(), movie.getId());
+
+        if (alreadyRated) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "You have already rated this movie."));
+        }
+
         Rate rate = new Rate();
         rate.setRate(request.getRate());
-        rate.setUser(request.getUser());
-        rate.setMovie(request.getMovie());
+        rate.setUser(user);
+        rate.setMovie(movie);
 
         rateRepository.save(rate);
 
@@ -63,15 +73,18 @@ public class RateController {
     @DeleteMapping("/{id}")
     public void deleteRate(@PathVariable long id) { rateRepository.deleteById(id); }
 
-    @GetMapping("/movie/{id}")
-    public ResponseEntity<Double> getAverageRateForMovie(@PathVariable long id) {
-        Double averageRate = rateRepository.findAverageByMovieId(id);
-        return ResponseEntity.ok(averageRate);
-    }
-
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<Rate>> getRatesForUser(@PathVariable long id) {
+    public ResponseEntity<List<Map<String, Object>>> getRatesForUser(@PathVariable long id) {
         List<Rate> ratesForUser = rateRepository.findByUserId(id);
-        return ResponseEntity.ok(ratesForUser);
+
+        List<Map<String, Object>> ratesAndMovies = ratesForUser.stream()
+                .map(rate -> Map.of(
+                        "rateId", rate.getId(),
+                        "movie", rate.getMovie(),
+                        "rate", rate.getRate()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(ratesAndMovies);
     }
 }

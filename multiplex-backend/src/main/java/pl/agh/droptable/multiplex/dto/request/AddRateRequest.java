@@ -1,22 +1,20 @@
 package pl.agh.droptable.multiplex.dto.request;
 
-import pl.agh.droptable.multiplex.model.Movie;
-import pl.agh.droptable.multiplex.model.User;
-
 public class AddRateRequest {
     private int rate;
-    private User user;
-    private Movie movie;
+    private long userId;
+    private long movieId;
+
 
     public int getRate() { return rate; }
 
     public void setRate(int rate) { this.rate = rate; }
 
-    public User getUser() { return user; }
+    public long getUserId() { return userId; }
 
-    public void setUser(User user) { this.user = user; }
+    public void setUserId(long userId) { this.userId = userId; }
 
-    public Movie getMovie() { return movie; }
+    public long getMovieId() { return movieId; }
 
-    public void setMovie(Movie movie) { this.movie = movie; }
+    public void setMovieId(long movieId) { this.movieId = movieId; }
 }

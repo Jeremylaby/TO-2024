@@ -13,6 +13,8 @@ import Movies from "./pages/Movies.jsx";
 import MovieDetails from "./pages/MovieDetails.jsx";
 import SeatSelection from "./pages/SeatSelection";
 import Payment from "./pages/Payment";
+import Ratings from "./pages/Ratings";
+import MyRatings from "./pages/MyRatings";
 
 import MyReservations from "./pages/MyReservations.jsx";
 const roles = {
@@ -34,6 +36,8 @@ function App() {
           <Route path={"/movie-details/:id"} element={<MovieDetails />} />
           <Route path="/seats/:seansId" element={<SeatSelection />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/ratings" element={<Ratings />} />
+          <Route path='/account/ratings' element={<MyRatings />} />
           <Route
             path={"/admin/users"}
             element={

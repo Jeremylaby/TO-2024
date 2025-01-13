@@ -15,6 +15,8 @@ public interface RateRepository extends JpaRepository<Rate, Long> {
 
     @Query("SELECT r FROM Rate r WHERE r.user.id = :userId")
     List<Rate> findByUserId(Long userId);
+
+    boolean existsByUserIdAndMovieId(Long userId, Long movieId);
 }
 
    
