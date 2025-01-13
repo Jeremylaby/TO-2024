@@ -15,6 +15,7 @@ import SeatSelection from "./pages/SeatSelection";
 import Payment from "./pages/Payment";
 
 import MyReservations from "./pages/MyReservations.jsx";
+import MoviePanel from "./pages/MoviePanel.jsx";
 const roles = {
   ADMIN: 2,
   WORKER: 1,
@@ -40,6 +41,7 @@ function App() {
                 <UserList />
             }
           />
+          <Route path="/admin/movie-panel" element={<MoviePanel/>}/>
 
           <Route path={"/unauthorized"} element={<Unauthorized />} />
         </Routes>

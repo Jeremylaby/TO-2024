@@ -1,0 +1,251 @@
+import React, {useState, useEffect} from "react";
+import {
+    TextField,
+    Button,
+    Typography,
+    Box,
+    MenuItem,
+    Select,
+    InputLabel,
+    FormControl,
+    ListItemText, FormHelperText
+} from "@mui/material";
+
+import Checkbox from "@mui/material/Checkbox";
+import NavBar from "../components/NavBar.jsx";
+
+const MovieCreationPanel = () => {
+    const inputProps = {
+        inputLabel: {style: {color: "white"}},
+        input: {style: {color: "white"}}
+    }
+    const [title, setTitle] = useState("");
+    const [director, setDirector] = useState("");
+    const [duration, setDuration] = useState(0);
+    const [imageUrl, setImageUrl] = useState("");
+    const [genres, setGenres] = useState([]);
+    const [submited, setSubmited] = useState(false)
+    const [availableGenres, setAvailableGenres] = useState([]);
+    const [isValid, setValid] = useState(false);
+    const handleImageChange = (e) => {
+        const url = e.target.value;
+        setImageUrl(url);
+        if (url.match(/\.(jpeg|jpg|gif|png|webp|bmp)$/i)) {
+            setValid(true);
+        } else {
+            setValid(false);
+        }
+    }
+    const addMovie = (movieData) => {
+        return fetch("/movie", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(movieData),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((result) => {
+                console.log("Movie added successfully:", result);
+                return result;
+            })
+            .catch((error) => {
+                console.error("Error adding movie:", error);
+                throw error;
+            })
+
+    };
+    useEffect(() => {
+
+
+        const fetchGenres = async () => {
+            try {
+                const response = await fetch("/api/genres"); // Endpoint for fetching genres
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setAvailableGenres(data);
+            } catch (error) {
+                console.error("Error fetching genres", error);
+            }
+        };
+
+        fetchGenres()
+    }, []);
+
+
+    const handleGenreChange = (event) => {
+        const {
+            target: {value},
+        } = event;
+        setGenres(typeof value === "string" ? value.split(",") : value);
+        console.log(genres)
+    };
+    const handleSubmit = async () => {
+        const movieData = {
+            title,
+            director,
+            duration,
+            genreIds: genres,
+        };
+        if (!title || !director || !imageUrl || !genres || duration === 0 || genres.length === 0) {
+            setSubmited(true)
+            return
+        }
+        console.log("Movie data:", movieData);
+        addMovie(movieData).finally(() => {
+            setTitle("");
+            setDirector("");
+            setDuration(0);
+            setImageUrl("");
+            setGenres([]);
+            setSubmited(false)
+        });
+
+    };
+
+    return (
+        <Box>
+            <NavBar/>
+            <Box sx={{
+                maxWidth: {sm: 600, xs: "100%"},
+                mx: {sm: "auto", xs: 3},
+                mt: {sm: 5, xs: 2},
+            }}>
+                <Typography variant="h4" gutterBottom>
+                    Movie Panel
+                </Typography>
+                {imageUrl && isValid && (<img
+                        style={{
+                            display: "block",
+                            width: "100%",
+                            height: "auto",
+                            marginTop: "16px",
+                            borderRadius: "4px",
+                            border: "1px solid #ccc",
+                        }}
+                        src={`${imageUrl}`}
+                        loading="lazy"
+                        alt={"movie-picture"}/>
+                )
+                }
+                <TextField
+                    fullWidth
+                    error={!title && submited}
+                    helperText={!title && submited ? "Title is required!" : ""}
+                    label="Title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    margin="normal"
+                    slotProps={
+                        inputProps
+                    }
+
+                />
+
+                <TextField
+                    fullWidth
+                    error={!director && submited}
+                    helperText={!director && submited ? "Director expected!" : ""}
+                    label="Director"
+                    value={director}
+                    onChange={(e) => setDirector(e.target.value)}
+                    margin="normal"
+                    slotProps={
+                        inputProps
+                    }
+
+
+                />
+
+                <TextField
+                    fullWidth
+                    error={duration === 0 && submited}
+                    helperText={duration === 0 && submited ? "Duration grater then zero!" : ""}
+                    label="Duration (minutes)"
+                    type="number"
+                    value={duration}
+                    onChange={(e) => setDuration(parseInt(e.target.value))}
+                    margin="normal"
+                    slotProps={
+                        inputProps
+                    }
+
+                />
+
+                <TextField
+                    fullWidth
+                    error={!imageUrl && submited}
+                    helperText={!imageUrl && submited ? "Image URL expected" : ""}
+                    label="Image URL"
+                    value={imageUrl}
+                    onChange={handleImageChange}
+                    margin="normal"
+                    slotProps={
+                        inputProps
+                    }
+
+                />
+
+                <FormControl fullWidth margin="normal" error={genres.length === 0 && submited}>
+                    <InputLabel sx={{color: "white"}}>Genres</InputLabel>
+                    <Select
+                        sx={{color: "white"}}
+                        variant="outlined"
+                        label={"Genres"}
+                        multiple
+                        value={genres}
+                        onChange={handleGenreChange}
+                        renderValue={(selected) =>
+                            selected
+                                .map(
+                                    (id) =>
+                                        availableGenres.find((genre) => genre.id === id)?.name || ""
+                                )
+                                .join(", ")
+                        }
+                        MenuProps={{
+                            PaperProps: {
+                                style: {
+                                    maxHeight: 200,
+                                    backgroundColor: "#333",
+                                    color: "white",
+                                },
+                            },
+                        }}
+                    >
+                        {availableGenres.map((genre) => (
+                            <MenuItem key={genre.id} value={genre.id}>
+                                <Checkbox checked={genres.indexOf(genre.id) > -1}/>
+                                <ListItemText sx={{color: "white"}} primary={genre.name}/>
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    {genres.length === 0 && submited && (
+                        <FormHelperText>Choose at least one genre</FormHelperText>
+                    )}
+                </FormControl>
+
+                <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    sx={{mt: 3}}
+                    onClick={handleSubmit}
+                >
+                    Submit
+                </Button>
+            </Box>
+        </Box>
+
+    )
+        ;
+};
+
+export default MovieCreationPanel;
