@@ -166,7 +166,6 @@ Usuwa istniejącego użytkownika z systemu na podstawie id.
   }
   ```
 
-
 ---
 
 ### `MovieController`
@@ -183,12 +182,12 @@ Dodaje nowy film do systemu.
 
 **Treść żądania (`Request Body`):**
 
-| Nazwa pola | Typ         | Walidacja                  | Opis                            |
-| ---------- | ----------- | -------------------------- | ------------------------------- |
-| `title`    | String      | Nie puste                  | Tytuł filmu.                    |
-| `director` | String      | Nie puste                  | Reżyser filmu.                  |
-| `duration` | Integer     | Wartość dodatnia           | Czas trwania filmu w minutach.  |
-| `genreIds` | List\<Long> | Istniejące identyfikatory  | Lista ID przypisanych gatunków. |
+| Nazwa pola | Typ         | Walidacja                 | Opis                            |
+| ---------- | ----------- | ------------------------- | ------------------------------- |
+| `title`    | String      | Nie puste                 | Tytuł filmu.                    |
+| `director` | String      | Nie puste                 | Reżyser filmu.                  |
+| `duration` | Integer     | Wartość dodatnia          | Czas trwania filmu w minutach.  |
+| `genreIds` | List\<Long> | Istniejące identyfikatory | Lista ID przypisanych gatunków. |
 
 **Odpowiedź:**
 
@@ -218,6 +217,7 @@ Zwraca szczegóły filmu na podstawie jego ID.
 
 - **Status 200 OK:** Film został znaleziony.  
   Przykład odpowiedzi:
+
   ```json
   {
     "id": 1,
@@ -281,7 +281,7 @@ Usuwa film z systemu na podstawie ID.
 
 **Odpowiedź:**
 
-- **Status 200 OK:** Film został pomyślnie usunięty.  
+- **Status 200 OK:** Film został pomyślnie usunięty.
 
 - **Status 404 Not Found:** Film o podanym ID nie istnieje.  
   Przykład odpowiedzi:
@@ -303,12 +303,12 @@ Aktualizuje dane istniejącego filmu.
 
 **Treść żądania (`Request Body`):**
 
-| Nazwa pola | Typ         | Walidacja                  | Opis                            |
-| ---------- | ----------- | -------------------------- | ------------------------------- |
-| `title`    | String      | Nie puste                  | Tytuł filmu.                    |
-| `director` | String      | Nie puste                  | Reżyser filmu.                  |
-| `duration` | Integer     | Wartość dodatnia           | Czas trwania filmu w minutach.  |
-| `genreIds` | List\<Long> | Istniejące identyfikatory  | Lista ID przypisanych gatunków. |
+| Nazwa pola | Typ         | Walidacja                 | Opis                            |
+| ---------- | ----------- | ------------------------- | ------------------------------- |
+| `title`    | String      | Nie puste                 | Tytuł filmu.                    |
+| `director` | String      | Nie puste                 | Reżyser filmu.                  |
+| `duration` | Integer     | Wartość dodatnia          | Czas trwania filmu w minutach.  |
+| `genreIds` | List\<Long> | Istniejące identyfikatory | Lista ID przypisanych gatunków. |
 
 **Odpowiedź:**
 
@@ -340,9 +340,9 @@ Dodaje nową salę kinową do systemu.
 
 **Treść żądania (`Request Body`):**
 
-| Nazwa pola | Typ    | Walidacja   | Opis                       |
-| ---------- | ------ | ----------- | -------------------------- |
-| `name`     | String | Nie puste   | Nazwa sali kinowej.        |
+| Nazwa pola | Typ    | Walidacja   | Opis                          |
+| ---------- | ------ | ----------- | ----------------------------- |
+| `name`     | String | Nie puste   | Nazwa sali kinowej.           |
 | `capacity` | Int    | Wartość > 0 | Liczba miejsc w sali kinowej. |
 
 **Odpowiedź:**
@@ -371,6 +371,7 @@ Zwraca szczegóły sali na podstawie jej ID.
 
 - **Status 200 OK:** Sala została znaleziona.  
   Przykład odpowiedzi:
+
   ```json
   {
     "id": 1,
@@ -428,10 +429,10 @@ Aktualizuje dane istniejącej sali.
 
 **Treść żądania (`Request Body`):**
 
-| Nazwa pola | Typ    | Walidacja   | Opis                       |
-| ---------- | ------ | ----------- | -------------------------- |
-| `id`       | Long   | Nie puste   | ID sali.                   |
-| `name`     | String | Nie puste   | Nazwa sali kinowej.        |
+| Nazwa pola | Typ    | Walidacja   | Opis                          |
+| ---------- | ------ | ----------- | ----------------------------- |
+| `id`       | Long   | Nie puste   | ID sali.                      |
+| `name`     | String | Nie puste   | Nazwa sali kinowej.           |
 | `capacity` | Int    | Wartość > 0 | Liczba miejsc w sali kinowej. |
 
 **Odpowiedź:**
@@ -458,15 +459,58 @@ Usuwa salę kinową z systemu na podstawie ID.
 
 **Odpowiedź:**
 
-- **Status 200 OK:** Sala została pomyślnie usunięta.  
+- **Status 200 OK:** Sala została pomyślnie usunięta.
 
 - **Status 404 Not Found:** Sala o podanym ID nie istnieje.  
   Przykład odpowiedzi:
+
   ```json
   {
     "error": "Room not found."
   }
   ```
+
+### `AnalyticsController`
+
+`AnalyticsController` dostarcza analityki związanej z filmami i rezerwacjami w systemie Multiplex. Obecnie umożliwia pobranie informacji o najbardziej dochodowych filmach.
+
+#### **Najbardziej dochodowe filmy**
+
+**Endpoint:**  
+`GET /analytics/movies`
+
+**Opis:**  
+Zwraca listę najbardziej dochodowych filmów w systemie.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Lista najbardziej dochodowych filmów.  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "movie": {
+        "id": 1,
+        "title": "Title",
+        "director": "Director",
+        "duration": 150,
+        "genres": ["Genre"]
+      },
+      "revenue": 50000
+    },
+    {
+      "title": {
+        "id": 2,
+        "title": "Title 2",
+        "director": "d2",
+        "duration": 130,
+        "genres": ["Genre"]
+      },
+      "revenue": 45000
+    }
+  ]
+  ```
+Domyślnie zwracanych jest 10 najbardziej dochodowych filmów.
 
 ## Diagram Przepływu Logowania i Rejestracji
 
@@ -486,6 +530,7 @@ W celu lepszego zrozumienia, jak działa proces rejestracji i autoryzacji użytk
 
 3. **Walidacja danych:**  
    `AuthController` sprawdza poprawność wprowadzonych danych. Weryfikuje, czy:
+
    - Wszystkie pola są poprawnie wypełnione.
    - Podany e-mail nie istnieje już w systemie.
 
@@ -510,6 +555,7 @@ W celu lepszego zrozumienia, jak działa proces rejestracji i autoryzacji użytk
 
 3. **Walidacja danych:**  
    `AuthController` przekazuje dane do `AuthenticationManager`, który jest konfigurowany w ramach Spring Security. `AuthenticationManager`:
+
    - Korzysta z `CustomUserDetailsService` do ładowania szczegółów użytkownika z bazy danych.
    - Sprawdza, czy użytkownik z podanym e-mailem istnieje.
    - Porównuje zaszyfrowane hasło wprowadzone przez użytkownika z hasłem przechowywanym w bazie danych przy użyciu mechanizmu Spring Security.
@@ -517,12 +563,13 @@ W celu lepszego zrozumienia, jak działa proces rejestracji i autoryzacji użytk
 4. **Uwierzytelnienie:**  
    Jeśli dane logowania są poprawne, użytkownik zostaje uwierzytelniony i Spring Security tworzy dla niego sesję.
 
-5. **Odpowiedź do użytkownika:** 
+5. **Odpowiedź do użytkownika:**
    Po pomyślnym uwierzytelnieniu serwer zwraca odpowiedź potwierdzającą logowanie. W przypadku błędu (np. błędne hasło lub e-mail), użytkownik otrzymuje komunikat zwrotny.
 
 ---
 
 ### **Rola Spring Security w procesach rejestracji i logowania**
+
 - **Szyfrowanie haseł:** Dzięki `PasswordEncoder` hasła są przechowywane w bezpieczny sposób.
 - **Walidacja danych uwierzytelniających:** `AuthenticationManager` i `CustomUserDetailsService` umożliwiają weryfikację użytkowników i ich haseł.
 - **Ochrona punktów końcowych:** Spring Security zapewnia kontrolę dostępu do endpointów, umożliwiając dostęp do wybranych zasobów tylko po zalogowaniu.

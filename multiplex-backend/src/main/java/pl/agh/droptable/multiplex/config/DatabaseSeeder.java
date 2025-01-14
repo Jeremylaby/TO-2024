@@ -3,6 +3,7 @@ package pl.agh.droptable.multiplex.config;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.agh.droptable.multiplex.model.*;
 import pl.agh.droptable.multiplex.repository.*;
 
@@ -15,6 +16,11 @@ import java.util.List;
 
 @Configuration
 public class DatabaseSeeder {
+    private final PasswordEncoder passwordEncoder;
+
+    public DatabaseSeeder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Bean
     CommandLineRunner initDatabase(
@@ -78,7 +84,7 @@ public class DatabaseSeeder {
             List<Seat> allSeats = new ArrayList<>();
             for (Room room : rooms) {
                 for (int row = 1; row <= 5; row++) {
-                    for (int seatNum = 1; seatNum <= room.getCapacity()/5; seatNum++) {
+                    for (int seatNum = 1; seatNum <= room.getCapacity() / 5; seatNum++) {
                         Seat seat = new Seat();
                         seat.setRoom(room);
                         seat.setRow(row);
@@ -90,6 +96,12 @@ public class DatabaseSeeder {
             seatRepository.saveAll(allSeats);
 
             // Create sample users
+            User admin = new User();
+            admin.setEmail("admin@admin.admin");
+            admin.setName("John Doe");
+            admin.setPassword(passwordEncoder.encode("password"));
+
+
             User user1 = new User();
             user1.setEmail("john@example.com");
             user1.setName("John Doe");
@@ -98,7 +110,7 @@ public class DatabaseSeeder {
             user2.setEmail("jane@example.com");
             user2.setName("Jane Smith");
 
-            List<User> users = userRepository.saveAll(Arrays.asList(user1, user2));
+            List<User> users = userRepository.saveAll(Arrays.asList(user1, user2, admin));
 
             // Create seans (screenings)
             LocalDateTime now = LocalDateTime.now();
