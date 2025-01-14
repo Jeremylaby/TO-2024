@@ -15,7 +15,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "./AuthProvider.jsx";
 
-const pages = ["Movies"];
+const pages = ["Movies", "Ratings"];
 
 export default function ResponsiveAppBar() {
   const { user } = useAuth();
