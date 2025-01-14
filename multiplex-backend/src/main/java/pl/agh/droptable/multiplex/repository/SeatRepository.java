@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface SeatRepository extends JpaRepository<Seat, Long> {
     Optional<Seat> findByRowAndSeatNumberAndRoom(int row, int seatNumber, Room room);
+    List<Seat> findAllByRoomId(Long roomId);
 }

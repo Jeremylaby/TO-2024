@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+import pl.agh.droptable.multiplex.dto.ReservationDTO;
 import pl.agh.droptable.multiplex.dto.request.AddReservationRequest;
 import pl.agh.droptable.multiplex.dto.ReservationTimeRange;
 import pl.agh.droptable.multiplex.model.Reservation;
@@ -77,8 +78,16 @@ public class ReservationController {
             reservation.setPrice(seans.getPrice());
             reservations.add(reservation);
         }
+
         reservationService.addReservations(reservations);
-        return ResponseEntity.ok(Map.of("message", "Reservation added successfully!"));
+        List<Long> reservationIds = reservations.stream()
+                .map(Reservation::getId)
+                .toList();
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Reservations added successfully!",
+                "reservationIds", reservationIds
+        ));
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getReservationById(@PathVariable("id") Long id) {
@@ -119,25 +128,44 @@ public class ReservationController {
 
     }
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<Reservation>> getReservationsByUserId(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(reservationService.findReservationsByUserId(id));
+    public ResponseEntity<List<ReservationDTO>> getReservationsByUserId(@PathVariable("id") Long id) {
+        List<Reservation> reservations = reservationService.findReservationsByUserId(id);
+        List<ReservationDTO> dtoList = reservations.stream()
+                .map(ReservationDTO::new)
+                .toList();
+        return ResponseEntity.ok(dtoList);
     }
+
     @GetMapping("/all")
-    public ResponseEntity<List<Reservation>> getAllReservations() {
-        return ResponseEntity.ok(reservationService.getReservations());
+    public ResponseEntity<List<ReservationDTO>> getAllReservations() {
+        List<Reservation> reservations = reservationService.getReservations();
+        List<ReservationDTO> dtoList = reservations.stream()
+                .map(ReservationDTO::new)
+                .toList();
+        return ResponseEntity.ok(dtoList);
     }
+
     @GetMapping("/all/today")
-    public ResponseEntity<List<Reservation>> getAllReservationsToday() {
+    public ResponseEntity<List<ReservationDTO>> getAllReservationsToday() {
         LocalDateTime today = LocalDateTime.now();
         Timestamp start = Timestamp.valueOf(today.withHour(0).withMinute(0).withSecond(0));
         Timestamp end = Timestamp.valueOf(today.withHour(23).withMinute(59).withSecond(59));
-        return ResponseEntity.ok(reservationService.findReservationsBetweenDates(start, end));
+        List<Reservation> reservations = reservationService.findReservationsBetweenDates(start, end);
+        List<ReservationDTO> dtoList = reservations.stream()
+                .map(ReservationDTO::new)
+                .toList();
+        return ResponseEntity.ok(dtoList);
     }
+
     @GetMapping("/all/time-range")
-    public ResponseEntity<List<Reservation>> getAllReservationsTimeRange(@Valid @RequestBody ReservationTimeRange request) {
-        Timestamp start  = request.getStart();
+    public ResponseEntity<List<ReservationDTO>> getAllReservationsTimeRange(@Valid @RequestBody ReservationTimeRange request) {
+        Timestamp start = request.getStart();
         Timestamp end = request.getEnd();
-        return ResponseEntity.ok(reservationService.findReservationsBetweenDates(start, end));
+        List<Reservation> reservations = reservationService.findReservationsBetweenDates(start, end);
+        List<ReservationDTO> dtoList = reservations.stream()
+                .map(ReservationDTO::new)
+                .toList();
+        return ResponseEntity.ok(dtoList);
     }
     //15 minutes
     @Scheduled(fixedRate = FIXED_RATE)

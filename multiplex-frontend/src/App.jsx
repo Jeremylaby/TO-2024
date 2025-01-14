@@ -9,6 +9,12 @@ import SignUp from "./pages/SignUp.jsx";
 import Unauthorized from "./pages/Unauthorized.jsx";
 import UserList from "./pages/UserList.jsx";
 import Home from "./pages/Home.jsx";
+import Movies from "./pages/Movies.jsx";
+import MovieDetails from "./pages/MovieDetails.jsx";
+import SeatSelection from "./pages/SeatSelection";
+import Payment from "./pages/Payment";
+
+import MyReservations from "./pages/MyReservations.jsx";
 const roles = {
   ADMIN: 2,
   WORKER: 1,
@@ -23,6 +29,11 @@ function App() {
           <Route path={"/login"} element={<Login />} />
           <Route path={"/signup"} element={<SignUp />} />
           <Route path={"/account"} element={<Account />} />
+          <Route path={"/account/reservations"} element={<MyReservations/>}/>
+          <Route path={"/movies"} element={<Movies />} />
+          <Route path={"/movie-details/:id"} element={<MovieDetails />} />
+          <Route path="/seats/:seansId" element={<SeatSelection />} />
+          <Route path="/payment" element={<Payment />} />
           <Route
             path={"/admin/users"}
             element={
