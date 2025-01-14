@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@RequestMapping("/analytics")
+@RequestMapping("api/analytics")
 public class AnalyticsController {
 
     private final MovieService movieService;
