@@ -17,6 +17,7 @@ import Ratings from "./pages/Ratings";
 import MyRatings from "./pages/MyRatings";
 
 import MyReservations from "./pages/MyReservations.jsx";
+import Analytics from "./pages/Analytics.jsx";
 const roles = {
   ADMIN: 2,
   WORKER: 1,
@@ -36,6 +37,7 @@ function App() {
           <Route path={"/movie-details/:id"} element={<MovieDetails />} />
           <Route path="/seats/:seansId" element={<SeatSelection />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/analytics" element={<Analytics />} />
           <Route path="/ratings" element={<Ratings />} />
           <Route path='/account/ratings' element={<MyRatings />} />
           <Route

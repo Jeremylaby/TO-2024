@@ -907,6 +907,12 @@ Dodaje nowy film do systemu.
 | `director` | String      | Nie puste                 | Reżyser filmu.                  |
 | `duration` | Integer     | Wartość dodatnia          | Czas trwania filmu w minutach.  |
 | `genreIds` | List\<Long> | Istniejące identyfikatory | Lista ID przypisanych gatunków. |
+| Nazwa pola | Typ         | Walidacja                 | Opis                            |
+| ---------- | ----------- | ------------------------- | ------------------------------- |
+| `title`    | String      | Nie puste                 | Tytuł filmu.                    |
+| `director` | String      | Nie puste                 | Reżyser filmu.                  |
+| `duration` | Integer     | Wartość dodatnia          | Czas trwania filmu w minutach.  |
+| `genreIds` | List\<Long> | Istniejące identyfikatory | Lista ID przypisanych gatunków. |
 
 **Odpowiedź:**
 
@@ -936,6 +942,7 @@ Zwraca szczegóły filmu na podstawie jego ID.
 
 - **Status 200 OK:** Film został znaleziony.  
   Przykład odpowiedzi:
+
 
   ```json
   {
@@ -1317,11 +1324,54 @@ Usuwa salę kinową z systemu na podstawie ID.
 
 - **Status 404 Not Found:** Sala o podanym ID nie istnieje.  
   Przykład odpowiedzi:
+
   ```json
   {
     "error": "Room not found."
   }
   ```
+
+### `AnalyticsController`
+
+`AnalyticsController` dostarcza analityki związanej z filmami i rezerwacjami w systemie Multiplex. Obecnie umożliwia pobranie informacji o najbardziej dochodowych filmach.
+
+#### **Najbardziej dochodowe filmy**
+
+**Endpoint:**  
+`GET /analytics/movies`
+
+**Opis:**  
+Zwraca listę najbardziej dochodowych filmów w systemie.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Lista najbardziej dochodowych filmów.  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "movie": {
+        "id": 1,
+        "title": "Title",
+        "director": "Director",
+        "duration": 150,
+        "genres": ["Genre"]
+      },
+      "revenue": 50000
+    },
+    {
+      "title": {
+        "id": 2,
+        "title": "Title 2",
+        "director": "d2",
+        "duration": 130,
+        "genres": ["Genre"]
+      },
+      "revenue": 45000
+    }
+  ]
+  ```
+Domyślnie zwracanych jest 10 najbardziej dochodowych filmów.
 
 ### `SeatController`
 
