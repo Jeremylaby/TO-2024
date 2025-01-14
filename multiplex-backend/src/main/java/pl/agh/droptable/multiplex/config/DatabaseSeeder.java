@@ -100,7 +100,7 @@ public class DatabaseSeeder {
             admin.setEmail("admin@admin.admin");
             admin.setName("John Doe");
             admin.setPassword(passwordEncoder.encode("password"));
-
+            
 
             User user1 = new User();
             user1.setEmail("john@example.com");
