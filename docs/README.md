@@ -1187,6 +1187,44 @@ Zwraca listę filmów, z podanego przedziału czasowego, rekomendowanych na pods
 
 ---
 
+#### **Pobranie filmów z ocenami**
+
+  **Endpoint:**  
+  `GET /movie/ratings`
+
+  **Opis:**  
+  Pobiera listę wszystkich filmów wraz z ich średnimi ocenami.
+
+  **Odpowiedź:**
+
+  - **Status 200 OK:** Lista filmów z ocenami.  
+    Przykład odpowiedzi:
+    ```json
+    [
+      {
+        "movie": {
+          "id": 1,
+          "title": "Inception",
+          "director": "Christopher Nolan"
+        },
+        "averageRating": 9.5
+      },
+      {
+        "movie": {
+          "id": 2,
+          "title": "Interstellar",
+          "director": "Christopher Nolan"
+        },
+        "averageRating": "N/A"
+      }
+    ]
+    ```
+
+  **Uwagi:**  
+  - Jeśli film nie ma jeszcze ocen, wartość `averageRating` będzie miała wartość `"N/A"`.
+
+---
+
 ### `RoomController`
 
 `RoomController` zajmuje się zarządzaniem salami kinowymi w systemie Multiplex. Oferuje punkty końcowe do dodawania, pobierania, aktualizacji oraz usuwania informacji o salach.
@@ -1417,6 +1455,120 @@ Dodaje nowe miejsce do istniejącej sali w systemie.
     "error": "Seat already exists."
   }
   ```
+
+### `RateController`
+
+`RateController` zajmuje się zarządzaniem ocenami filmów w systemie Multiplex. Oferuje punkty końcowe do dodawania, usuwania oraz pobierania ocen.
+
+#### **Dodanie oceny**
+
+**Endpoint:**  
+`POST /rate`
+
+**Opis:**  
+Dodaje nową ocenę filmu przez użytkownika.
+
+**Treść żądania (`Request Body`):**
+
+| Nazwa pola | Typ    | Walidacja          | Opis                            |
+| ---------- | -------| ------------------ | ------------------------------- |
+| `userId`   | Long   | Istniejący ID      | ID użytkownika dodającego ocenę.|
+| `movieId`  | Long   | Istniejący ID      | ID filmu, który jest oceniany.  |
+| `rate`     | Integer|                    | Wartość oceny filmu.            |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Ocena została pomyślnie dodana.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "message": "Rate added successfully!"
+  }
+  ```
+- **Status 404 Not Found:** Użytkownik lub film nie został znaleziony.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "message": "User not found"
+  }
+  ```
+  lub
+  ```json
+  {
+    "message": "Movie not found"
+  }
+  ```
+- **Status 400 Bad Request:** Użytkownik już ocenił ten film.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "You have already rated this movie."
+  }
+  ```
+
+---
+
+#### **Usunięcie oceny**
+
+**Endpoint:**  
+`DELETE /rate/{id}`
+
+**Opis:**  
+Usuwa ocenę o podanym ID.
+
+**Parametry:**  
+
+| Nazwa     | Typ  | Opis              |
+| ----------| -----| ----------------- |
+| `id`      | Long | ID oceny do usunięcia. |
+
+**Odpowiedź:**  
+- **Status 204 No Content:** Ocena została usunięta.
+
+---
+
+#### **Pobranie ocen użytkownika**
+
+**Endpoint:**  
+`GET /rate/user/{id}`
+
+**Opis:**  
+Pobiera wszystkie oceny dodane przez użytkownika o podanym ID.
+
+**Parametry:**  
+
+| Nazwa     | Typ  | Opis                 |
+| ----------| -----| -------------------- |
+| `id`      | Long | ID użytkownika.      |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Lista ocen użytkownika.  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "rateId": 1,
+      "movie": {
+        "id": 2,
+        "title": "Inception",
+        "director": "Christopher Nolan"
+      },
+      "rate": 9
+    },
+    {
+      "rateId": 3,
+      "movie": {
+        "id": 5,
+        "title": "Interstellar",
+        "director": "Christopher Nolan"
+      },
+      "rate": 10
+    }
+  ]
+  ```
+
+---
 
 ## Diagram Przepływu Logowania i Rejestracji
 
