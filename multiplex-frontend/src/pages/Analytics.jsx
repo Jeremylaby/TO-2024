@@ -14,7 +14,7 @@ import { Projector, CircleDollarSign } from 'lucide-react';
 import NavBar from "../components/NavBar.jsx";
 
 const Analytics = () => {
-  const [movies, setMovies] = useState([]);
+  const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [maxRevenue, setMaxRevenue] = useState(0);
 
@@ -28,11 +28,8 @@ const Analytics = () => {
           throw new Error("Failed to fetch analytics.");
         }
         const data = await response.json();
-        console.log(data)
-        setMovies(data); // Assuming paginated response
-        // Find max revenue for progress bar scaling
-        const max = data.reduce((max, movie) => 
-          Math.max(max, movie.revenue), 0);
+        setData(data);
+        const max = data.reduce((max, record) => Math.max(max, record.revenue), 0);
         setMaxRevenue(max);
       } catch (error) {
         setError(error.message);
@@ -69,9 +66,9 @@ const Analytics = () => {
             </div>
 
             <Grid container spacing={3}>
-              {movies.map((movieData, index) => {
-                const movie = movieData.movie;
-                const revenue = movieData.revenue;
+              {data.map((record, index) => {
+                const movie = record.movie;
+                const revenue = record.revenue;
                 const progress = (revenue / maxRevenue) * 100;
 
                 return (
