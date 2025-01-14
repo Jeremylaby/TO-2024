@@ -188,6 +188,12 @@ Dodaje nowy film do systemu.
 | `director` | String      | Nie puste                 | Reżyser filmu.                  |
 | `duration` | Integer     | Wartość dodatnia          | Czas trwania filmu w minutach.  |
 | `genreIds` | List\<Long> | Istniejące identyfikatory | Lista ID przypisanych gatunków. |
+| Nazwa pola | Typ         | Walidacja                 | Opis                            |
+| ---------- | ----------- | ------------------------- | ------------------------------- |
+| `title`    | String      | Nie puste                 | Tytuł filmu.                    |
+| `director` | String      | Nie puste                 | Reżyser filmu.                  |
+| `duration` | Integer     | Wartość dodatnia          | Czas trwania filmu w minutach.  |
+| `genreIds` | List\<Long> | Istniejące identyfikatory | Lista ID przypisanych gatunków. |
 
 **Odpowiedź:**
 
@@ -217,6 +223,7 @@ Zwraca szczegóły filmu na podstawie jego ID.
 
 - **Status 200 OK:** Film został znaleziony.  
   Przykład odpowiedzi:
+
 
   ```json
   {
@@ -511,6 +518,51 @@ Zwraca listę najbardziej dochodowych filmów w systemie.
   ]
   ```
 Domyślnie zwracanych jest 10 najbardziej dochodowych filmów.
+
+### `SeatController`
+
+`SeatController` zarządza operacjami związanymi z miejscami w salach kinowych systemu Multiplex. Oferuje główny punkt końcowy do dodawania miejsc do sal.
+
+#### **Dodawanie miejsca do sali**
+
+**Endpoint:**  
+`POST /seat/add`
+
+**Opis:**  
+Dodaje nowe miejsce do istniejącej sali w systemie.
+
+**Treść żądania (`Request Body`):**
+| Nazwa pola | Typ | Walidacja | Opis |
+| ------------- | ------ | ----------------------------------------------- | -------------------------- |
+| `roomName` | String | Nazwa istniejącej sali, Nie puste | Nazwa sali kinowej. |
+| `row` | Integer| Nie puste | Rząd, w którym znajduje się miejsce. |
+| `seatNumber` | Integer| Nie puste | Numer miejsca. |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Miejsce dodane pomyślnie.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "message": "Seat added successfully!"
+  }
+  ```
+
+- **Status 404 Not Found:** Nie znaleziono sali o podanej nazwie.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "Room with provided name could not be found."
+  }
+  ```
+  
+- **Status 409 Conflict:** Miejsce o podanym numerze i rzędzie już istnieje w sali.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "Seat already exists."
+  }
+  ```
 
 ## Diagram Przepływu Logowania i Rejestracji
 

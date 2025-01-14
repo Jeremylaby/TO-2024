@@ -19,6 +19,8 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
 
+    private int permissionLevel;
+
     public User() {
     }
 
@@ -104,5 +106,13 @@ public class User implements UserDetails {
     public void setName(String name) {
         this.firstName = name.split(" ")[0];
         this.lastName = name.split(" ")[1];
+    }
+    
+    public int getPermissionLevel() {
+        return permissionLevel;
+    }
+
+    public void setPermissionLevel(int permissionLevel) {
+        this.permissionLevel = permissionLevel;
     }
 }
