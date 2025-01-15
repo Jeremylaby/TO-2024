@@ -17,6 +17,7 @@ import Ratings from "./pages/Ratings";
 import MyRatings from "./pages/MyRatings";
 
 import MyReservations from "./pages/MyReservations.jsx";
+import MoviePanel from "./pages/MoviePanel.jsx";
 import Analytics from "./pages/Analytics.jsx";
 const roles = {
   ADMIN: 2,
@@ -46,6 +47,7 @@ function App() {
                 <UserList />
             }
           />
+          <Route path="/admin/movie-panel" element={<MoviePanel/>}/>
 
           <Route path={"/unauthorized"} element={<Unauthorized />} />
         </Routes>
