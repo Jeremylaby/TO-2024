@@ -37,7 +37,7 @@ const MovieCreationPanel = () => {
         }
     }
     const addMovie = (movieData) => {
-        return fetch("/movie", {
+        return fetch("http://localhost:8080/movie", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -65,7 +65,7 @@ const MovieCreationPanel = () => {
 
         const fetchGenres = async () => {
             try {
-                const response = await fetch("/api/genres"); // Endpoint for fetching genres
+                const response = await fetch("/api/genre");
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }

@@ -1,95 +1,90 @@
 import {useAuth} from "../components/AuthProvider.jsx";
 import NavBar from "../components/NavBar.jsx";
-import {Box, Paper, Table, TableBody, TableContainer} from "@mui/material";
-import {useEffect, useState} from "react";
+import {
+    Box, Button, Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Paper,
+    Rating,
+    Table,
+    TableBody,
+    TableContainer
+} from "@mui/material";
+import React, {useEffect, useState} from "react";
 import Typography from "@mui/material/Typography";
 import Reservation from "../components/Reservation.jsx";
 
-const data = [
-    {
-        "id": 102,
-        "paid": false,
-        "userId": 1,
-        "firstName": "John",
-        "lastName": "Doe",
-        "row": 2,
-        "seatNumber": 15,
-        "roomName": "12",
-        "price": 25.00,
-        "start": "2025-01-02T15:00:00",
-        "endTime": "2025-01-02T17:00:00",
-        "movie": {
-            "id": 502,
-            "title": "The Matrix",
-            "director": "Lana Wachowski",
-            "duration": 120
-        }
-    },
-    {
-        "id": 101,
-        "paid": true,
-        "userId": 1,
-        "firstName": "John",
-        "lastName": "Doe",
-        "row": 1,
-        "seatNumber": 10,
-        "roomName": "10",
-        "price": 20.00,
-        "start": "2025-01-01T18:00:00",
-        "endTime": "2025-01-01T20:00:00",
-        "movie": {
-            "id": 501,
-            "title": "Inception",
-            "director": "Christopher Nolan",
-            "duration": 120
-        }
-    },
-    {
-        "id": 103,
-        "paid": true,
-        "userId": 1,
-        "firstName": "John",
-        "lastName": "Doe",
-        "row": 3,
-        "seatNumber": 20,
-        "roomName": "14",
-        "price": 18.00,
-        "start": "2025-01-03T10:00:00",
-        "endTime": "2025-01-03T12:00:00",
-        "movie": {
-            "id": 503,
-            "title": "Avatar",
-            "director": "James Cameron",
-            "duration": 120
-        }
-    },
-    {
-        "id": 104,
-        "paid": false,
-        "userId": 1,
-        "firstName": "John",
-        "lastName": "Doe",
-        "row": 4,
-        "seatNumber": 25,
-        "roomName": "16",
-        "price": 22.50,
-        "start": "2025-01-04T20:00:00",
-        "endTime": "2025-01-04T22:30:00",
-        "movie": {
-            "id": 504,
-            "title": "Interstellar",
-            "director": "Christopher Nolan",
-            "duration": 150
-        }
-    }
-]
+
+
 
 
 const MyReservations = () => {
     const {user} = useAuth()
+
     const [reservations, setReservations] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [openCancelDialog, setOpenCancelDialog] = useState(false);
+    const [openRateDialog, setOpenRateDialog] = useState(false);
+    const [selectedReservation, setSelectedReservation] = useState(null);
+    const [ratingValue, setRatingValue] = useState(0);
+    const handleOpenDialog = (reservation) => {
+        setSelectedReservation(reservation);
+        setOpenDialog(true);
+    };
+    const handleOpenRate = () =>{
+        setOpenDialog(false);
+        setOpenRateDialog(true);
+    }
+    const handleOpenCancel = () =>{
+        setOpenDialog(false);
+        setOpenCancelDialog(true);
+    }
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+        setOpenRateDialog(false);
+        setOpenCancelDialog(false)
+        setSelectedReservation(null);
+        setRatingValue(0);
+    };
+
+    const handleSubmitRating = async () => {
+
+        if (!selectedReservation|| ratingValue === 0) {
+            alert("Please select a valid rating.");
+            return;
+        }
+
+        const requestPayload = {
+            movieId: selectedReservation.movie.id,
+            userId: user.id,
+            rate: ratingValue,
+        };
+
+        try {
+            const response = await fetch("http://localhost:8080/rate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestPayload),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to submit rating.");
+            }
+
+            alert("Rating submitted successfully!");
+            handleCloseDialog();
+
+        } catch (error) {
+            alert("Error submitting rating: " + error.message);
+        }
+    };
+
     const fetchReservations = () => {
         setError(null);
         setLoading(true);
@@ -111,10 +106,40 @@ const MyReservations = () => {
             .finally(() => setLoading(false))
 
     };
+    const handleSubmitCancel = async () => {
+        if (!selectedReservation) {
+            alert("Please select a valid reservation to cancel.");
+            return;
+        }
+
+        const reservationId = selectedReservation.id;
+        const userId = user.id;
+
+        try {
+            const response = await fetch(`/api/reservation/${reservationId}/user/${userId}/cancel`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to cancel the reservation.");
+            }
+
+            alert("Reservation canceled successfully!");
+            handleCloseDialog();
+
+        } catch (error) {
+            alert("Error canceling reservation: " + error.message);
+        } finally {
+            fetchReservations();
+        }
+    };
+
     useEffect(() => {
-        //fetchReservations();
-        setReservations(data)
-        setLoading(false)
+        fetchReservations();
     }, []);
     if (loading) return (<h1>Loading...</h1>)
     if (error) return (<h1>Error: {error}</h1>)
@@ -134,7 +159,7 @@ const MyReservations = () => {
                             <TableBody  >
                                 {reservations.map((reservation) => (
 
-                                        <Reservation reservation={reservation} key={reservation.id}/>
+                                        <Reservation onClick={() => handleOpenDialog(reservation)} reservation={reservation} key={reservation.id}/>
 
                                 ))}
                             </TableBody>
@@ -142,6 +167,77 @@ const MyReservations = () => {
                     </TableContainer>
                 )}
             </Box>
+            <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                fullWidth
+                maxWidth="xs"
+            >
+                <DialogTitle>Select Action</DialogTitle>
+                <DialogContent>
+                    <Box  sx={{ display:"flex", justifyContent:"center"}}>
+                    <Button onClick={handleOpenCancel} sx={{margin:2}} variant="outlined">Cancel Reservation</Button>
+                    <Button onClick={handleOpenRate} sx={{margin:2}} variant="outlined">Rate Movie</Button>
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog}>Cancel</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={openRateDialog}
+                onClose={handleCloseDialog}
+                fullWidth
+                maxWidth="xs"
+            >
+                <DialogTitle>Add your rating</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        {selectedReservation ? `Movie: ${selectedReservation.movie.title}` : ""}
+                    </Typography>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            marginTop: "16px",
+                        }}
+                    >
+                        <Rating
+                            name="user-rating"
+                            value={ratingValue}
+                            onChange={(event, newValue) => setRatingValue(newValue)}
+                            size="large"
+                        />
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog}>Cancel</Button>
+                    <Button onClick={handleSubmitRating} color="primary">
+                        Submit
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={openCancelDialog}
+                onClose={handleCloseDialog}
+                fullWidth
+                maxWidth="xs"
+            >
+                <DialogTitle>Are you sure to cancel this reservation ?</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        {selectedReservation ? `Reservation Id: ${selectedReservation.id}` : ""}
+                        {selectedReservation ? ` Movie: ${selectedReservation.movie.title}` : ""}
+                    </Typography>
+
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog}>Cancel</Button>
+                    <Button onClick={handleSubmitCancel} color="primary">
+                        Submit
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>)
 };
 export default MyReservations
