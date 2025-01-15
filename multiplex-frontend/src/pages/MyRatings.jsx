@@ -18,7 +18,7 @@ import {
   DialogContent,
   DialogTitle,
   Button,
-  Rating,
+  Rating, Paper,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -110,7 +110,7 @@ const Ratings = () => {
         {error && <Alert severity="error">{error}</Alert>}
 
         {!error && (
-          <List>
+          <List component={Paper}>
             {ratings.map(({rateId, movie, rate }) => (
               <React.Fragment key={movie.id}>
                 <ListItem alignItems="flex-start" sx={{ alignItems: "center" }}>
@@ -139,7 +139,7 @@ const Ratings = () => {
                           Director: {movie.director || "Unknown"}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          Genres: {movie.genres.join(", ") || "N/A"}
+                          Genres: {movie.genres.map((genre)=>genre.name).join(", ") || "N/A"}
                         </Typography>
                       </>
                     }

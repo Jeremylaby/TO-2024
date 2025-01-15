@@ -19,7 +19,7 @@ import {
   DialogTitle,
   TextField,
   Button,
-  Rating,
+  Rating, Paper,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -118,7 +118,7 @@ const Ratings = () => {
         {error && <Alert severity="error">{error}</Alert>}
 
         {!error && (
-          <List>
+          <List component={Paper}>
             {moviesWithRatings.map(({ movie, averageRating }) => (
               <React.Fragment key={movie.id}>
                 <ListItem alignItems="flex-start" sx={{ alignItems: "center" }}>
@@ -147,7 +147,7 @@ const Ratings = () => {
                           Director: {movie.director || "Unknown"}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          Genres: {movie.genres.join(", ") || "N/A"}
+                          Genres: {movie.genres.map((genre)=>genre.name).join(", ") || "N/A"}
                         </Typography>
                       </>
                     }
