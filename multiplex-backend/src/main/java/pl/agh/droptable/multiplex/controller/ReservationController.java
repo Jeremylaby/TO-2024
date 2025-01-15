@@ -110,6 +110,34 @@ public class ReservationController {
         reservationService.removeReservation(reservation);
         return ResponseEntity.ok(Map.of("message", "Reservation deleted successfully!"));
     }
+    @DeleteMapping("/{reservationId}/user/{userId}/cancel")
+    public ResponseEntity<?> deleteReservation(
+            @PathVariable("reservationId") Long reservationId,
+            @PathVariable("userId") Long userId) {
+
+        Optional<Reservation> optionalReservation = reservationService.getReservation(reservationId);
+        if (optionalReservation.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Reservation not found"));
+        }
+
+        Reservation reservation = optionalReservation.get();
+
+        if (reservation.getUser().getId()!=userId) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "You are not the owner of this reservation"));
+        }
+
+        if (reservation.getSeans().getStart().toLocalDateTime().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Cannot delete past reservations"));
+        }
+
+        reservationService.removeReservation(reservation);
+
+        return ResponseEntity.ok(Map.of("message", "Reservation deleted successfully"));
+    }
+
     @PutMapping("/{id}/pay")
     public ResponseEntity<?> payReservation(@PathVariable("id") Long id) {
         Optional<Reservation> optionalReservation = reservationService.getReservation(id);

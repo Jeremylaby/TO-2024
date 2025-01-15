@@ -106,7 +106,8 @@ public class DatabaseSeeder {
             User user1 = new User();
             user1.setEmail("john@example.com");
             user1.setName("John Doe");
-
+            user1.setPassword(passwordEncoder.encode("password"));
+            user1.setPermissionLevel(Role.NORMAL_USER.getValue());
             User user2 = new User();
             user2.setEmail("jane@example.com");
             user2.setName("Jane Smith");
