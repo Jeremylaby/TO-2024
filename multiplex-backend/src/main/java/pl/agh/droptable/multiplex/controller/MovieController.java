@@ -112,8 +112,17 @@ public class MovieController {
         List<Map<String, Object>> moviesWithRatings = movies.stream()
                 .map(movie -> {
                     Double averageRating = rateRepository.findAverageByMovieId(movie.getId());
+                    List<String> genreNames = movie.getGenres().stream()
+                            .map(genre -> genre.getName())
+                            .toList();
                     return Map.of(
-                            "movie", movie,
+                            "movie", Map.of(
+                                    "id", movie.getId(),
+                                    "title", movie.getTitle(),
+                                    "director", movie.getDirector(),
+                                    "imageUrl", movie.getImageUrl(),
+                                    "genres", genreNames
+                            ),
                             "averageRating", averageRating != null ? averageRating : "N/A"
                     );
                 })
