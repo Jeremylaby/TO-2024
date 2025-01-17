@@ -39,6 +39,21 @@ public class SecurityConfiguration {
                         .requestMatchers("/", "/auth/**", "/h2-console/**", "/movie/**", "/api/seans/**", "/rate", "/rate/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .formLogin(formLogin -> formLogin
+                        .loginProcessingUrl("/auth/login")
+                        .successHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            response.getWriter().write("{\"message\": \"Login successful\"}");
+                            response.getWriter().flush();
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.getWriter().write("{\"error\": \"Invalid credentials\"}");
+                            response.getWriter().flush();
+                        })
+                        .permitAll()
+                )
+
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))

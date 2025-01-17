@@ -59,30 +59,30 @@ public class AuthController {
     }
 
 
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            HttpSession session = httpRequest.getSession(true);
-            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-            User user = userRepository.findByEmail(request.getEmail()).orElse(null);
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Login successful!");
-            response.put("id", user.getId());
-            response.put("firstName", user.getFirstName());
-            response.put("lastName", user.getLastName());
-            response.put("email", user.getEmail());
-            response.put("sessionId", session.getId());
-
-            return ResponseEntity.ok(response);
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid credentials."));
-        }
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+//        try {
+//            Authentication authentication = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+//            );
+//
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            HttpSession session = httpRequest.getSession(true);
+//            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+//            User user = userRepository.findByEmail(request.getEmail()).orElse(null);
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("message", "Login successful!");
+//            response.put("id", user.getId());
+//            response.put("firstName", user.getFirstName());
+//            response.put("lastName", user.getLastName());
+//            response.put("email", user.getEmail());
+//            response.put("sessionId", session.getId());
+//
+//            return ResponseEntity.ok(response);
+//        } catch (AuthenticationException e) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid credentials."));
+//        }
+//    }
 
     @GetMapping("/check")
     public ResponseEntity<?> checkAuth(@AuthenticationPrincipal UserDetails userDetails) {
