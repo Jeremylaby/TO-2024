@@ -25,6 +25,13 @@ const Account = () => {
     const navigateToRatigs = () => {
         navigate('/account/ratings');
     };
+    const handleLogout = async () =>{
+        const success = await logout();
+        if(success){
+            navigate("/")
+        }
+
+    }
 
     const remove = async (user) => {
         await fetch(`/api/user/${user.id}`, {
@@ -38,10 +45,10 @@ const Account = () => {
                 if (!response.ok) {
                     throw new Error("Failed to delete user ");
                 }
-            })
+            }).then(handleLogout)
             .catch((error) => {
                 console.error("Error while deleting user:", error);
-            }).finally(logout());
+            })
     };
     return (
         <div className={"d-flex flex-column "}>
@@ -61,7 +68,7 @@ const Account = () => {
                                 }}
                             >
                                 <Typography variant="h5" fontWeight="bold">Personal Information</Typography>
-                                <Button variant="contained" color="error" onClick={logout}>
+                                <Button variant="contained" color="error" onClick={handleLogout}>
                                     Sign out
                                 </Button>
                             </Box>
