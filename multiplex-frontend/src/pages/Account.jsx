@@ -77,6 +77,7 @@ const Account = () => {
                         <Grid2 size={{md: 3, sm: 12, xs: 12}}>
                             <Box
                                 sx={{
+                                    bgcolor: "background.paper",
                                     borderRadius: 2,
                                     padding: 2,
                                 }}
@@ -133,13 +134,13 @@ const Account = () => {
                         </Grid2>
 
                         <Grid2 size={{md: 9, sm: 12, xs: 12}}>
-                            <Box sx={{borderColor:"textSecondary", borderRadius: 2, padding: 4}}>
+                            <Grid2 sx={{bgcolor: "background.paper",borderColor:"textSecondary", borderRadius: 2, padding: 4}}>
                                 <Typography variant="body2" color="textSecondary" mb={4}>
                                     Manage your personal information, name and email and account.
                                 </Typography>
                                 <Grid2 container spacing={2} columns={12}>
                                     <Grid2 size={{md: 6, sm: 12, xs: 12}}>
-                                        <Card variant="outlined">
+                                        <Card sx={{bgcolor:"background.default"}} variant="outlined">
                                             <CardContent>
                                                 <Typography variant="body2" color="textSecondary">
                                                     FullName
@@ -151,7 +152,7 @@ const Account = () => {
                                         </Card>
                                     </Grid2>
                                     <Grid2 size={{md: 6, sm: 12, xs: 12}}>
-                                        <Card variant="outlined">
+                                        <Card sx={{bgcolor:"background.default"}} variant="outlined">
                                             <CardContent>
                                                 <Typography variant="body2" color="textSecondary">
                                                     Role
@@ -167,7 +168,7 @@ const Account = () => {
                                         </Card>
                                     </Grid2>
                                     <Grid2 size={{md: 6, sm: 12, xs: 12}}>
-                                        <Card variant="outlined">
+                                        <Card sx={{bgcolor:"background.default"}} variant="outlined">
                                             <CardContent>
                                                 <Typography variant="body2" color="textSecondary">
                                                     Email
@@ -178,9 +179,10 @@ const Account = () => {
                                     </Grid2>
                                 </Grid2>
 
-                            </Box>
+                            </Grid2>
                             <Grid2 size={{md: 12, sm: 12, xs: 12}}>
                                 <Box sx={{
+                                    bgcolor: "background.paper",
                                     borderColor: '#f5f5f5', borderRadius: 2,
                                     display: "flex",
                                     justifyContent: "space-between",

@@ -28,6 +28,9 @@ const roles = {
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
+    background:{
+      paper: "#1b1b1b",
+    }
   },
 });
 function App() {

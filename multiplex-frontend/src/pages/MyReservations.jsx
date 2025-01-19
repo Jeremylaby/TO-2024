@@ -154,8 +154,8 @@ const MyReservations = () => {
                 {reservations.length === 0 ? (
                     <Typography variant="body1">No reservations found.</Typography>
                 ) : (
-                    <TableContainer component={Paper}>
-                        <Table>
+                    <TableContainer  component={Paper}>
+                        <Table sx={{bgcolor: "background.paper",}}>
 
                             <TableBody  >
                                 {reservations.map((reservation) => (
