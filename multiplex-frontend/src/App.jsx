@@ -19,13 +19,21 @@ import MyRatings from "./pages/MyRatings";
 import MyReservations from "./pages/MyReservations.jsx";
 import MoviePanel from "./pages/MoviePanel.jsx";
 import Analytics from "./pages/Analytics.jsx";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 const roles = {
   ADMIN: 2,
   WORKER: 1,
   USER: 0,
 };
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 function App() {
   return (
+    <ThemeProvider theme={darkTheme}>
+
     <AuthProvider>
       <Router>
         <Routes>
@@ -44,15 +52,16 @@ function App() {
           <Route
             path={"/admin/users"}
             element={
-                <UserList />
+              <UserList />
             }
-          />
+            />
           <Route path="/admin/movie-panel" element={<MoviePanel/>}/>
 
           <Route path={"/unauthorized"} element={<Unauthorized />} />
         </Routes>
       </Router>
     </AuthProvider>
+            </ThemeProvider>
   );
 }
 

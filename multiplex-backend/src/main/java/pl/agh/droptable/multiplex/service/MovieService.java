@@ -1,8 +1,10 @@
 package pl.agh.droptable.multiplex.service;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.agh.droptable.multiplex.model.Movie;
+import pl.agh.droptable.multiplex.model.MovieSearchCriteria;
 import pl.agh.droptable.multiplex.repository.MovieRepository;
 
 import java.util.HashMap;
@@ -16,7 +18,6 @@ public class MovieService {
     public MovieService(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
     }
-
     public Optional<Movie> getMovieById(Long id) {
         return movieRepository.findById(id);
     }
@@ -29,5 +30,15 @@ public class MovieService {
             return r;
         }).toList();
 
+    }
+
+    public Page<Movie> searchMovies(MovieSearchCriteria criteria, Pageable pageable) {
+
+        return movieRepository.searchMovies(
+                criteria.getTitle(),
+                criteria.getDirector(),
+                criteria.getGenreIds(),
+                pageable
+        );
     }
 }

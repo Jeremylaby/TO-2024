@@ -38,7 +38,7 @@ const MovieDetails = () => {
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/movie/${id}`);
+        const response = await fetch(`/api/movie/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch movie details.");
         }
@@ -55,7 +55,7 @@ const MovieDetails = () => {
   useEffect(() => {
     const fetchAllSeanses = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/movie/seanses/${id}`);
+        const response = await fetch(`/api/movie/seanses/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch all seanses for the movie.");
         }

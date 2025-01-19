@@ -147,7 +147,7 @@ const MyReservations = () => {
         <Box>
             <NavBar/>
             <Box sx={{padding: 2}}>
-                <Typography variant="h4" sx={{marginBottom: 2}}>
+                <Typography variant="h4"  sx={{marginBottom: 2}}>
                     Reservations
                 </Typography>
                 {reservations.length === 0 ? (
@@ -192,7 +192,7 @@ const MyReservations = () => {
             >
                 <DialogTitle>Add your rating</DialogTitle>
                 <DialogContent>
-                    <Typography>
+                    <Typography color="black">
                         {selectedReservation ? `Movie: ${selectedReservation.movie.title}` : ""}
                     </Typography>
                     <div
@@ -225,7 +225,7 @@ const MyReservations = () => {
             >
                 <DialogTitle>Are you sure to cancel this reservation ?</DialogTitle>
                 <DialogContent>
-                    <Typography>
+                    <Typography color="black">
                         {selectedReservation ? `Reservation Id: ${selectedReservation.id}` : ""}
                         {selectedReservation ? ` Movie: ${selectedReservation.movie.title}` : ""}
                     </Typography>

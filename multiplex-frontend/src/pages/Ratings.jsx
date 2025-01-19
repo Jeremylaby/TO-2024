@@ -36,7 +36,7 @@ const Ratings = () => {
   useEffect(() => {
     const fetchMoviesWithRatings = async () => {
       try {
-        const response = await fetch("http://localhost:8080/movie/ratings");
+        const response = await fetch("/api/movie/ratings");
         if (!response.ok) {
           throw new Error("Failed to fetch movies with ratings.");
         }

@@ -23,6 +23,7 @@ const Reservation = ({reservation, onClick}) => {
             <TableCell >
                 <Grid2 container columns={12} spacing={2} sx={{
                     backgroundColor: "#f8f6f1",
+                    color:"black",
                     borderRadius: 2,
                     overflow: "hidden",
                         transition: "transform 0.3s, box-shadow 0.3s",
@@ -78,7 +79,7 @@ const Reservation = ({reservation, onClick}) => {
                                     sm: "row",
                                 },
                             }}>
-                                <Typography variant="body2" color="text.secondary">
+                                <Typography variant="body2" color="black">
                                     Genres: {reservation.movie.genres.map((genre)=>genre.name).join(", ") || "N/A"}
                                 </Typography>
                             </Box>

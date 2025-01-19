@@ -47,12 +47,12 @@ const Account = () => {
         <div className={"d-flex flex-column "}>
             <NavBar/>
             <Container>
-                <Box sx={{padding: 4, bgcolor: '#e0e0e0', minHeight: '100vh'}}>
+                <Box sx={{padding: 4, minHeight: '100vh'}}>
                     <Grid2 container spacing={2} columnSpacing={2} columns={12}>
                         <Grid2 size={{md: 12, sm: 12, xs: 12}}>
                             <Box
                                 sx={{
-                                    color: "black",
+
                                     display: "flex",
                                     justifyContent: "space-between",
                                     alignItems: "center",
@@ -70,8 +70,6 @@ const Account = () => {
                         <Grid2 size={{md: 3, sm: 12, xs: 12}}>
                             <Box
                                 sx={{
-                                    bgcolor: '#f5f5f5',
-                                    color: "black",
                                     borderRadius: 2,
                                     padding: 2,
                                 }}
@@ -128,7 +126,7 @@ const Account = () => {
                         </Grid2>
 
                         <Grid2 size={{md: 9, sm: 12, xs: 12}}>
-                            <Box sx={{bgcolor: '#f5f5f5', borderRadius: 2, padding: 4}}>
+                            <Box sx={{borderColor:"textSecondary", borderRadius: 2, padding: 4}}>
                                 <Typography variant="body2" color="textSecondary" mb={4}>
                                     Manage your personal information, name and email and account.
                                 </Typography>
@@ -176,7 +174,7 @@ const Account = () => {
                             </Box>
                             <Grid2 size={{md: 12, sm: 12, xs: 12}}>
                                 <Box sx={{
-                                    bgcolor: '#f5f5f5', borderRadius: 2, color: "black",
+                                    borderColor: '#f5f5f5', borderRadius: 2,
                                     display: "flex",
                                     justifyContent: "space-between",
                                     alignItems: "center",

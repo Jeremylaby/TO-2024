@@ -30,7 +30,14 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/auth/**", "/h2-console/**", "/movie/**", "/api/seans/**", "/rate", "/rate/**").permitAll() //TODO
+                        .requestMatchers("/",
+                                "/auth/**",
+                                "/h2-console/**",
+                                "/api/movie/**",
+                                "/api/genre",
+                                "/api/seans/**",
+                                "/rate",
+                                "/rate/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
