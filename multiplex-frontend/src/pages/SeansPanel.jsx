@@ -81,7 +81,7 @@ const RoomElement = ({ room }) => (
     </Box>
 );
 
-const DropZone = ({ selected, onDrop, label, acceptType }) => {
+const DropZone = ({ selected, onDrop, label, acceptType,children }) => {
     const [{ isOver }, drop] = useDrop(() => ({
         accept: acceptType,
         drop: (item) => onDrop(item),
@@ -105,9 +105,9 @@ const DropZone = ({ selected, onDrop, label, acceptType }) => {
                 textAlign: "center",
             }}
         >
-            <Typography variant="body1">
-                {selected ? (acceptType === ItemType.MOVIE ? selected.title : selected.name) : `Drop ${label} here`}
-            </Typography>
+            <ListItem sx={{justifyContent: !selected&&"center",}}>
+            {children}
+            </ListItem>
         </Paper>
     );
 };
@@ -207,8 +207,12 @@ const SeansPanel = () => {
 
                 <Box sx={{ width: "40%", display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <Typography variant="h6">Seans Configuration</Typography>
-                    <DropZone selected={selectedMovie} onDrop={handleMovieDrop} label="Movie" acceptType={ItemType.MOVIE} />
-                    <DropZone selected={selectedRoom} onDrop={handleRoomDrop} label="Room" acceptType={ItemType.ROOM} />
+                    <DropZone selected={selectedMovie} onDrop={handleMovieDrop} label="Movie" acceptType={ItemType.MOVIE} >
+                        {selectedMovie?<MovieElement movie={selectedMovie}/>: <Typography variant="body1">Drop Movie</Typography> }
+                    </DropZone>
+                    <DropZone selected={selectedRoom} onDrop={handleRoomDrop} label="Room" acceptType={ItemType.ROOM} >
+                        {selectedRoom?<RoomElement room={selectedRoom}/>:<Typography variant="body1">Drop Room</Typography>}
+                    </DropZone>
                 </Box>
                 <Box sx={{ width: "30%" }}>
                     <Typography variant="h6">Rooms</Typography>
