@@ -79,6 +79,16 @@ const RoomPanel = () => {
 
         addRoom(roomData);
     }
+    const handleReset = () =>
+    {
+        setRoomName("")
+        setRows(5)
+        setSeatsPerRow(
+            Array.from({length: rows}, () => 5)
+        );
+        setSuccessMessage(null)
+        setErrorMessage(null)
+    }
     return (
         <Box>
             <NavBar/>
@@ -156,7 +166,11 @@ const RoomPanel = () => {
                                                     width: 30,
                                                     height: 30,
                                                     borderRadius: "4px",
-                                                    backgroundColor: "gray",
+                                                    backgroundImage: `url("/seat.png")`,
+                                                    backgroundSize: "cover",
+                                                    backgroundPosition: "center", 
+                                                    backgroundRepeat: "no-repeat",
+
                                                     cursor: "not-allowed",
                                                     display: "flex",
                                                     justifyContent: "center",
@@ -196,6 +210,15 @@ const RoomPanel = () => {
                     ))}
 
                 </Box>
+                <Button
+                    variant="contained"
+                    color="secoundary"
+
+                    sx={{mt: 3, width: "60%"}}
+                    onClick={handleReset}
+                >
+                    Reset
+                </Button>
                 <Button
                     variant="contained"
                     color="primary"
