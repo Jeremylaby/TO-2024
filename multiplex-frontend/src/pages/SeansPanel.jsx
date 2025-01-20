@@ -148,6 +148,8 @@ const SeansPanel = () => {
     const handleReset = ()=>{
         setErrorMessage(null)
         setSuccessMessage(null)
+        setPrice("")
+        setStart("")
         handleMovieDrop(null)
         handleRoomDrop(null)
     }
