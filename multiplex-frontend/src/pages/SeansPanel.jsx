@@ -1,116 +1,27 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Paper } from "@mui/material";
+import React, {useEffect, useState} from "react";
+import {DndProvider, useDrag, useDrop} from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
+import {Alert, Avatar, Box, Button, List, ListItem, ListItemAvatar, ListItemText, Paper} from "@mui/material";
 import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import InputAdornment from '@mui/material/InputAdornment';
+import DropZone from "../components/SeansPanel/DropZone.jsx";
+import DraggableItem from "../components/SeansPanel/DraggableItem.jsx";
+import MovieElement from "../components/SeansPanel/MovieElement.jsx";
+import RoomElement from "../components/SeansPanel/RoomElement.jsx";
 
 const ItemType = {
     MOVIE: "MOVIE",
     ROOM: "ROOM",
 };
 
-const DraggableItem = ({ item, itemType, children }) => {
-    const [{ isDragging }, drag] = useDrag(() => ({
-        type: itemType,
-        item: { ...item },
-        collect: (monitor) => ({
-            isDragging: monitor.isDragging(),
-        }),
-    }));
 
-    return (
-        <ListItem
-            ref={drag}
-            sx={{
-                cursor: "grab",
-                opacity: isDragging ? 0.5 : 1,
-                backgroundColor: "background.paper",
-                padding: 1,
-                marginBottom: 1,
-            }}
-        >
-            {children}
-        </ListItem>
-    );
-};
 
-const MovieElement = ({ movie }) => (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-        <ListItemAvatar>
-            <Avatar
-                variant="rounded"
-                src={movie.imageUrl || "https://placehold.co/80x80"}
-                alt={movie.title}
-                sx={{ width: 80, height: 80, borderRadius: "8px", marginRight: 2 }}
-            />
-        </ListItemAvatar>
-        <ListItemText
-            primary={<Typography variant="subtitle1" fontWeight="bold">{movie.title}</Typography>}
-            secondary={
-                <>
-                    <Typography variant="body2" color="text.secondary">
-                        Director: {movie.director || "Unknown"}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        Genres: {movie.genres.map((genre) => genre.name).join(", ") || "N/A"}
-                    </Typography>
-                </>
-            }
-        />
-    </Box>
-);
 
-const RoomElement = ({ room }) => (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-        <ListItemAvatar>
-            <Avatar
-                variant="rounded"
-                src={"/theater.png"}
-                alt={room.name}
-                sx={{ width: 80, height: 80, borderRadius: "8px", marginRight: 2 }}
-            />
-        </ListItemAvatar>
-        <ListItemText
-            primary={<Typography variant="subtitle1" fontWeight="bold">{room.name}</Typography>}
-            secondary={
-                <Typography variant="body2" color="text.secondary">
-                    Capacity: {room.capacity}
-                </Typography>
-            }
-        />
-    </Box>
-);
 
-const DropZone = ({ selected, onDrop, label, acceptType,children }) => {
-    const [{ isOver }, drop] = useDrop(() => ({
-        accept: acceptType,
-        drop: (item) => onDrop(item),
-        collect: (monitor) => ({
-            isOver: monitor.isOver(),
-        }),
-    }));
 
-    return (
-        <Paper
-            ref={drop}
-            sx={{
-                minHeight: 100,
-                width: "80%",
-                backgroundColor: isOver ? "lightblue" : "background.default",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: 2,
-                padding: 2,
-                textAlign: "center",
-            }}
-        >
-            <ListItem sx={{justifyContent: !selected&&"center",}}>
-            {children}
-            </ListItem>
-        </Paper>
-    );
-};
+
+
 
 const SeansPanel = () => {
     const [error, setError] = useState(null);
@@ -121,38 +32,42 @@ const SeansPanel = () => {
     const [originalRooms, setOriginalRooms] = useState([]);
     const [selectedMovie, setSelectedMovie] = useState(null);
     const [selectedRoom, setSelectedRoom] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [start, setStart] = useState("");
+    const [price, setPrice] = useState("");
 
     const fetchMovies = async () => {
         try {
             const response = await fetch("/api/movie", {
                 method: 'GET',
                 credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
             });
 
             if (!response.ok) throw new Error(`Movies fetch failed: ${response.status}`);
 
             const data = await response.json();
-            setOriginalMovies(data); // Zapisujemy oryginalną listę
+            setOriginalMovies(data);
             setMovies(data);
         } catch (err) {
             setError(err.message);
         }
     };
 
-    // Pobieranie pokoi
+
     const fetchRooms = async () => {
         try {
             const response = await fetch("/api/room", {
                 method: 'GET',
                 credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
             });
 
             if (!response.ok) throw new Error(`Rooms fetch failed: ${response.status}`);
 
             const data = await response.json();
-            setOriginalRooms(data); // Zapisujemy oryginalną listę
+            setOriginalRooms(data);
             setRooms(data);
         } catch (err) {
             setError(err.message);
@@ -175,17 +90,67 @@ const SeansPanel = () => {
 
     const handleMovieDrop = (movie) => {
         console.log("Dropped movie:", movie);
-        setMovies([...originalMovies].filter((m)=>m.id!==movie.id))
+
+        movie ? setMovies([...originalMovies].filter((m) => m.id !== movie.id)) :setMovies([...originalMovies])
         setSelectedMovie(movie);
     };
 
     const handleRoomDrop = (room) => {
         console.log("Dropped room:", room);
 
-        setRooms([...originalRooms].filter((r)=>r.id!==room.id))
+        room? setRooms([...originalRooms].filter((r) => r.id !== room.id)) : setRooms([...originalRooms])
         setSelectedRoom(room)
     };
+    const addSeans = (seansData) => {
+        return fetch("/api/seans", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(seansData),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((result) => {
+                console.log("Seans added successfully:", result);
+                setErrorMessage(null)
+                setSuccessMessage(`Seans added successfully`)
+                return result;
+            })
+            .catch((error) => {
+                console.error("Error adding seans:", error);
+                setErrorMessage(`Error adding seans: ${error}`)
+                setSuccessMessage(null)
+            })
 
+    };
+    const handleSubmit = async ()=>{
+
+        if (!start || !price || !selectedRoom || !selectedMovie || price <= 0) {
+            setErrorMessage("Some data is missing")
+            return;
+        }
+        const formattedStart = new Date(start).toISOString();
+        const formattedPrice = parseFloat(price).toFixed(2);
+        const seansData = {
+            movieId:selectedMovie.id,
+            roomId:selectedRoom.id,
+            start:formattedStart,
+            price:formattedPrice
+        }
+        addSeans(seansData)
+    }
+    const handleReset = ()=>{
+        setErrorMessage(null)
+        setSuccessMessage(null)
+        handleMovieDrop(null)
+        handleRoomDrop(null)
+    }
 
 
     if (loading) return (<h1>Loading...</h1>);
@@ -193,33 +158,87 @@ const SeansPanel = () => {
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", padding: 3 }}>
-                <Box sx={{ width: "30%" }}>
+            <Box sx={{display: "flex", justifyContent: "space-between", padding: 3}}>
+                <Box sx={{width: "30%"}}>
                     <Typography variant="h6">Movies</Typography>
-                    <List>
+                    <List sx={{ maxHeight: "80vh", overflowY: "auto"}}>
                         {movies.map((movie) => (
                             <DraggableItem key={movie.id} item={movie} itemType={ItemType.MOVIE}>
-                                <MovieElement movie={movie} />
+                                <MovieElement movie={movie}/>
                             </DraggableItem>
                         ))}
                     </List>
                 </Box>
 
-                <Box sx={{ width: "40%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <Typography variant="h6">Seans Configuration</Typography>
-                    <DropZone selected={selectedMovie} onDrop={handleMovieDrop} label="Movie" acceptType={ItemType.MOVIE} >
-                        {selectedMovie?<MovieElement movie={selectedMovie}/>: <Typography variant="body1">Drop Movie</Typography> }
+                <Box sx={{width: "40%", display: "flex", flexDirection: "column", alignItems: "center"}}>
+                    <Typography variant="h4" gutterBottom>
+                        Seans Panel
+                    </Typography>
+                    {successMessage && <Alert severity="success">{successMessage}</Alert>}
+                    {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                    <TextField
+                        label="Start Time"
+                        type="datetime-local"
+                        margin={"normal"}
+                        value={start}
+                        onChange={(e) => setStart(e.target.value)}
+                        sx={{width: "80%"}}
+                        slotProps={{inputLabel: {shrink: true}}}
+                        required
+                    />
+                    <TextField
+                        label="Price"
+                        type="number"
+                        margin="normal"
+                        sx={{width: "80%"}}
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        required
+                        slotProps={{
+                        input:{min: 0,
+                            max: 100,
+                            step: 0.01,
+                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                        }
+                        }}
+
+
+                    />
+
+
+                    <DropZone selected={selectedMovie} onDrop={handleMovieDrop} acceptType={ItemType.MOVIE}>
+                        {selectedMovie ? <MovieElement movie={selectedMovie}/> :
+                            <Typography variant="body1">Drop Movie Here</Typography>}
                     </DropZone>
-                    <DropZone selected={selectedRoom} onDrop={handleRoomDrop} label="Room" acceptType={ItemType.ROOM} >
-                        {selectedRoom?<RoomElement room={selectedRoom}/>:<Typography variant="body1">Drop Room</Typography>}
+                    <DropZone selected={selectedRoom} onDrop={handleRoomDrop} acceptType={ItemType.ROOM}>
+                        {selectedRoom ? <RoomElement room={selectedRoom}/> :
+                            <Typography variant="body1">Drop Room Here</Typography>}
                     </DropZone>
+                    <Button
+                        variant="contained"
+                        color="secoundary"
+
+                        sx={{mt: 3,width:"80%"}}
+                        onClick={handleReset}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+
+                        sx={{mt: 3,width:"80%"}}
+                        onClick={handleSubmit}
+                    >
+                        Submit
+                    </Button>
                 </Box>
-                <Box sx={{ width: "30%" }}>
+                <Box sx={{width: "30%"}}>
                     <Typography variant="h6">Rooms</Typography>
-                    <List>
+                    <List sx={{ maxHeight: "80vh", overflowY: "auto"}}>
                         {rooms.map((room) => (
                             <DraggableItem key={room.id} item={room} itemType={ItemType.ROOM}>
-                                <RoomElement room={room} />
+                                <RoomElement room={room}/>
                             </DraggableItem>
                         ))}
                     </List>

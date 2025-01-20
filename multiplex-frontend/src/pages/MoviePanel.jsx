@@ -105,7 +105,7 @@ const MovieCreationPanel = () => {
             return
         }
         console.log("Movie data:", movieData);
-        addMovie(movieData).finally(() => {
+        addMovie(movieData).then(() => {
             setTitle("");
             setDirector("");
             setDuration(0);
