@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {DndProvider, useDrag, useDrop} from "react-dnd";
+import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
-import {Alert, Avatar, Box, Button, List, ListItem, ListItemAvatar, ListItemText, Paper} from "@mui/material";
+import {Alert, Box, Button, List} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import InputAdornment from '@mui/material/InputAdornment';
@@ -9,18 +9,12 @@ import DropZone from "../components/SeansPanel/DropZone.jsx";
 import DraggableItem from "../components/SeansPanel/DraggableItem.jsx";
 import MovieElement from "../components/SeansPanel/MovieElement.jsx";
 import RoomElement from "../components/SeansPanel/RoomElement.jsx";
+import NavBar from "../components/NavBar.jsx";
 
 const ItemType = {
     MOVIE: "MOVIE",
     ROOM: "ROOM",
 };
-
-
-
-
-
-
-
 
 
 const SeansPanel = () => {
@@ -91,14 +85,14 @@ const SeansPanel = () => {
     const handleMovieDrop = (movie) => {
         console.log("Dropped movie:", movie);
 
-        movie ? setMovies([...originalMovies].filter((m) => m.id !== movie.id)) :setMovies([...originalMovies])
+        movie ? setMovies([...originalMovies].filter((m) => m.id !== movie.id)) : setMovies([...originalMovies])
         setSelectedMovie(movie);
     };
 
     const handleRoomDrop = (room) => {
         console.log("Dropped room:", room);
 
-        room? setRooms([...originalRooms].filter((r) => r.id !== room.id)) : setRooms([...originalRooms])
+        room ? setRooms([...originalRooms].filter((r) => r.id !== room.id)) : setRooms([...originalRooms])
         setSelectedRoom(room)
     };
     const addSeans = (seansData) => {
@@ -129,7 +123,7 @@ const SeansPanel = () => {
             })
 
     };
-    const handleSubmit = async ()=>{
+    const handleSubmit = async () => {
 
         if (!start || !price || !selectedRoom || !selectedMovie || price <= 0) {
             setErrorMessage("Some data is missing")
@@ -138,14 +132,14 @@ const SeansPanel = () => {
         const formattedStart = new Date(start).toISOString();
         const formattedPrice = parseFloat(price).toFixed(2);
         const seansData = {
-            movieId:selectedMovie.id,
-            roomId:selectedRoom.id,
-            start:formattedStart,
-            price:formattedPrice
+            movieId: selectedMovie.id,
+            roomId: selectedRoom.id,
+            start: formattedStart,
+            price: formattedPrice
         }
         addSeans(seansData)
     }
-    const handleReset = ()=>{
+    const handleReset = () => {
         setErrorMessage(null)
         setSuccessMessage(null)
         setPrice("")
@@ -160,10 +154,11 @@ const SeansPanel = () => {
 
     return (
         <DndProvider backend={HTML5Backend}>
+            <NavBar/>
             <Box sx={{display: "flex", justifyContent: "space-between", padding: 3}}>
                 <Box sx={{width: "30%"}}>
                     <Typography variant="h6">Movies</Typography>
-                    <List sx={{ maxHeight: "80vh", overflowY: "auto"}}>
+                    <List sx={{maxHeight: "80vh", overflowY: "auto"}}>
                         {movies.map((movie) => (
                             <DraggableItem key={movie.id} item={movie} itemType={ItemType.MOVIE}>
                                 <MovieElement movie={movie}/>
@@ -197,11 +192,12 @@ const SeansPanel = () => {
                         onChange={(e) => setPrice(e.target.value)}
                         required
                         slotProps={{
-                        input:{min: 0,
-                            max: 100,
-                            step: 0.01,
-                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                        }
+                            input: {
+                                min: 0,
+                                max: 100,
+                                step: 0.01,
+                                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                            }
                         }}
 
 
@@ -220,7 +216,7 @@ const SeansPanel = () => {
                         variant="contained"
                         color="secoundary"
 
-                        sx={{mt: 3,width:"80%"}}
+                        sx={{mt: 3, width: "80%"}}
                         onClick={handleReset}
                     >
                         Reset
@@ -229,7 +225,7 @@ const SeansPanel = () => {
                         variant="contained"
                         color="primary"
 
-                        sx={{mt: 3,width:"80%"}}
+                        sx={{mt: 3, width: "80%"}}
                         onClick={handleSubmit}
                     >
                         Submit
@@ -237,7 +233,7 @@ const SeansPanel = () => {
                 </Box>
                 <Box sx={{width: "30%"}}>
                     <Typography variant="h6">Rooms</Typography>
-                    <List sx={{ maxHeight: "80vh", overflowY: "auto"}}>
+                    <List sx={{maxHeight: "80vh", overflowY: "auto"}}>
                         {rooms.map((room) => (
                             <DraggableItem key={room.id} item={room} itemType={ItemType.ROOM}>
                                 <RoomElement room={room}/>
