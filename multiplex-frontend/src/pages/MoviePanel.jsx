@@ -1,14 +1,16 @@
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {
-    TextField,
-    Button,
-    Typography,
+    Alert,
     Box,
+    Button,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    ListItemText,
     MenuItem,
     Select,
-    InputLabel,
-    FormControl,
-    ListItemText, FormHelperText, Alert
+    TextField,
+    Typography
 } from "@mui/material";
 
 import Checkbox from "@mui/material/Checkbox";
@@ -195,7 +197,8 @@ const MovieCreationPanel = () => {
                             min: 1,
                             max: 300,
                             step: 1
-                        }}}
+                        }
+                    }}
                 />
 
 
