@@ -42,7 +42,11 @@ export default function ResponsiveAppBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/*<AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />*/}
-            <Box component={"img"} src={"/logo.png"} sx={{width:"40px", display: { xs: "none", md: "flex" }, mr: 1}}/>
+          <Box
+            component={"img"}
+            src={"/logo.png"}
+            sx={{ width: "40px", display: { xs: "none", md: "flex" }, mr: 1 }}
+          />
           <Link to="/">
             <Typography
               variant="h6"
@@ -97,7 +101,11 @@ export default function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
-            <Box component={"img"} src={"/logo.png"} sx={{width:"40px", display: { xs: "flex", md: "none" }, mr: 1}}/>
+          <Box
+            component={"img"}
+            src={"/logo.png"}
+            sx={{ width: "40px", display: { xs: "flex", md: "none" }, mr: 1 }}
+          />
           {/*<AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />*/}
           <Typography
             variant="h5"
@@ -129,6 +137,16 @@ export default function ResponsiveAppBar() {
                 {page}
               </Button>
             ))}
+            {user && Number.parseInt(user.role) >= 3 && (
+              <Button
+                component={Link}
+                to={`/admin`}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: "white", display: "block" }}
+              >
+                Admin
+              </Button>
+            )}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">

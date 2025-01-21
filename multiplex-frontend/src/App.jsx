@@ -22,6 +22,7 @@ import Analytics from "./pages/Analytics.jsx";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import SeansPanel from "./pages/SeansPanel.jsx";
 import RoomPanel from "./pages/RoomPanel.jsx";
+import Admin from "./pages/Admin.jsx";
 const roles = {
   ADMIN: 2,
   WORKER: 1,
@@ -49,6 +50,7 @@ function App() {
           <Route path={"/account"} element={<Account />} />
           <Route path={"/account/reservations"} element={<MyReservations/>}/>
           <Route path={"/movies"} element={<Movies />} />
+          <Route path={"/admin"} element={<Admin />} />
           <Route path={"/movie-details/:id"} element={<MovieDetails />} />
           <Route path="/seats/:seansId" element={<SeatSelection />} />
           <Route path="/payment" element={<Payment />} />
