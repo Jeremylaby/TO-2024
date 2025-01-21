@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/seat")
+@RequestMapping("api/seat")
 public class SeatController {
 
     private final RoomRepository roomRepository;

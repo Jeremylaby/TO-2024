@@ -31,13 +31,13 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/",
-                                "/auth/**",
+                                "/api/auth/**",
                                 "/h2-console/**",
                                 "/api/movie/**",
                                 "/api/genre",
                                 "/api/seans/**",
-                                "/rate",
-                                "/rate/**").permitAll()
+                                "/api/rate",
+                                "/api/rate/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

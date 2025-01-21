@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/rate")
+@RequestMapping("/api/rate")
 public class RateController {
     private final RateRepository rateRepository;
     private final UserRepository userRepository;
