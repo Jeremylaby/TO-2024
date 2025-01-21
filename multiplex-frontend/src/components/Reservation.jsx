@@ -52,7 +52,7 @@ const Reservation = ({reservation, onClick}) => {
                         justifyContent: "space-between",
                     }}>
                         <Grid2 size={12}>
-                            <Typography variant="subtitle2" color="textSecondary">
+                            <Typography variant="h6" >
                                 MOVIE TICKET
                             </Typography>
                             <Typography variant="h2" sx={{
@@ -62,13 +62,17 @@ const Reservation = ({reservation, onClick}) => {
                             }}>
                                 {reservation.movie.title}
                             </Typography>
-                            <Typography variant="subtitle2" color="textSecondary">
+                            <Typography variant="subtitle1" sx={{
+                                fontWeight: "bold"}}>
                                 Director: {reservation.movie.director || "Unknown"}
                             </Typography>
-                            <Typography variant="body2" sx={{mt: 1, mb: 2}}>
+                            <Typography variant="subtitle1" >
+                                Genres: {reservation.movie.genres.map((genre)=>genre.name).join(", ") || "N/A"}
+                            </Typography>
+                            <Typography variant="body2" >
                                 123 Alekino St., Krakow
                             </Typography>
-                            <Typography variant="caption" sx={{mt: 1, mb: 2}}>
+                            <Typography variant="caption" >
                                 Owner: {reservation.firstName} {reservation.lastName}
                             </Typography>
                             <Box sx={{
@@ -79,9 +83,7 @@ const Reservation = ({reservation, onClick}) => {
                                     sm: "row",
                                 },
                             }}>
-                                <Typography variant="body2" color="black">
-                                    Genres: {reservation.movie.genres.map((genre)=>genre.name).join(", ") || "N/A"}
-                                </Typography>
+
                             </Box>
 
                             {!reservation.paid&&(<Typography color={"error"} variant="body1" sx={{mt: 1, mb: 2}}>
