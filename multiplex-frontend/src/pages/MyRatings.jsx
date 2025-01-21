@@ -47,7 +47,7 @@ const Ratings = () => {
               console.error("User ID is not available");
               return;
             }
-            const response = await fetch(`http://localhost:8080/rate/user/${userId}`);
+            const response = await fetch(`/api/rate/user/${userId}`);
             if (!response.ok) {
               throw new Error("Failed to fetch ratings.");
             }
@@ -78,7 +78,7 @@ const Ratings = () => {
   const handleDeleteRating = async () => {
     const rateId = selectedRateId;
     try {
-    const response = await fetch(`http://localhost:8080/rate/${rateId}`, {
+    const response = await fetch(`/api/rate/${rateId}`, {
         method: "DELETE",
     });
 

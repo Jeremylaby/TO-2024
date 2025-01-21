@@ -37,7 +37,7 @@ const MovieCreationPanel = () => {
         }
     }
     const addMovie = (movieData) => {
-        return fetch("http://localhost:8080/movie", {
+        return fetch("/api/movie", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

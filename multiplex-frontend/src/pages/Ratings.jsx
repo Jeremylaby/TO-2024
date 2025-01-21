@@ -79,7 +79,7 @@ const Ratings = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/rate", {
+      const response = await fetch("/api/rate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
