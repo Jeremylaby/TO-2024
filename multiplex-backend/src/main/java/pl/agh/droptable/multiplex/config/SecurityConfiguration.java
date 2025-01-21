@@ -4,10 +4,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -25,6 +27,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -36,14 +39,58 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/",
+                        .requestMatchers(
+                                "/",
                                 "/auth/**",
                                 "/h2-console/**",
-                                "/api/movie/**",
                                 "/api/genre",
-                                "/api/seans/**",
+                                "/api/seans/all/**",
+                                "/api/seans/currently-playing",
+                                "/api/seans/{id}/seats"
+                        ).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/**").permitAll()
+
+                        // Endpoints accessible by NORMAL_USER and above
+                        .requestMatchers(
                                 "/api/rate",
-                                "/api/rate/**").permitAll()
+                                "/api/movies/recommendations/**",
+                                "/api/reservation/**"
+                        ).hasRole("NORMAL_USER")
+                        .requestMatchers(
+                                HttpMethod.POST, "/api/rate"
+                        ).hasRole("NORMAL_USER")
+                        .requestMatchers(
+                                HttpMethod.GET, "/api/room"
+                        ).hasRole("NORMAL_USER")
+                        .requestMatchers(
+                                HttpMethod.GET, "/api/room/{id}"
+                        ).hasRole("NORMAL_USER")
+                        .requestMatchers(
+                                HttpMethod.GET, "/api/seans/{id}"
+                        ).hasRole("NORMAL_USER")
+                        .requestMatchers(
+                                HttpMethod.DELETE, "/api/user/{id}"
+                        ).hasRole("NORMAL_USER")
+
+                        // Endpoints accessible by EMPLOYEE and above
+                        .requestMatchers(
+                                "/api/rate/**",
+                                "/api/reservation/**",
+                                "/api/room/all",
+                                "/api/seans/**",
+                                "/api/seat/**",
+                                "/api/user/**"
+                        ).hasRole("EMPLOYEE")
+
+                        // Endpoints accessible by MANAGER and above
+                        .requestMatchers(
+                                "/api/analytics/**",
+                                "/api/movies/**",
+                                "/api/room/**"
+                        ).hasRole("MANAGER")
+
+                        // Endpoints accessible by ADMINISTRATOR only
+                        .requestMatchers("/api/analytics").hasRole("ADMINISTRATOR")
                         .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin
