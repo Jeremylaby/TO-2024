@@ -4,7 +4,6 @@ import "./styles/App.css";
 import Account from "./pages/Account.jsx";
 import { AuthProvider } from "./components/AuthProvider.jsx";
 import Login from "./pages/Login.jsx";
-import ProtectedRouter from "./components/ProtectedRoute.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Unauthorized from "./pages/Unauthorized.jsx";
 import UserList from "./pages/UserList.jsx";
@@ -19,7 +18,6 @@ import MyRatings from "./pages/MyRatings";
 import MyReservations from "./pages/MyReservations.jsx";
 import MoviePanel from "./pages/MoviePanel.jsx";
 import Analytics from "./pages/Analytics.jsx";
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import SeansPanel from "./pages/SeansPanel.jsx";
 import RoomPanel from "./pages/RoomPanel.jsx";
 import Admin from "./pages/Admin.jsx";
@@ -28,14 +26,7 @@ const roles = {
   WORKER: 1,
   USER: 0,
 };
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    background:{
-      paper: "#1b1b1b",
-    }
-  },
-});
+
 function App() {
   return (
     <AuthProvider>

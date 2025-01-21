@@ -55,15 +55,16 @@ export default function ResponsiveAppBar() {
               href="#app-bar-with-responsive-menu"
               sx={{
                 mr: 2,
+                ml: 2,
                 display: { xs: "none", md: "flex" },
                 fontFamily: "monospace",
                 fontWeight: 700,
-                letterSpacing: ".3rem",
+                letterSpacing: ".2rem",
                 color: "white",
                 textDecoration: "none",
               }}
             >
-              LOGO
+              Ale kino
             </Typography>
           </Link>
 
