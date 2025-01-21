@@ -226,7 +226,7 @@ const MyReservations = () => {
             >
                 <DialogTitle>Are you sure to cancel this reservation ?</DialogTitle>
                 <DialogContent>
-                    <Typography color="black">
+                    <Typography >
                         {selectedReservation ? `Reservation Id: ${selectedReservation.id}` : ""}
                         {selectedReservation ? ` Movie: ${selectedReservation.movie.title}` : ""}
                     </Typography>
