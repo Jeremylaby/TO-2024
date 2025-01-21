@@ -193,7 +193,7 @@ const MyReservations = () => {
             >
                 <DialogTitle>Add your rating</DialogTitle>
                 <DialogContent>
-                    <Typography color="black">
+                    <Typography >
                         {selectedReservation ? `Movie: ${selectedReservation.movie.title}` : ""}
                     </Typography>
                     <div

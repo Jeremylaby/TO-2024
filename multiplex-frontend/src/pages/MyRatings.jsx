@@ -37,27 +37,27 @@ const Ratings = () => {
         navigate("/login");
       }
     }, [user, navigate]);
-  
 
+  const fetchMoviesWithRatings = async () => {
+    try {
+      const userId = user?.id;
+      if (!userId) {
+        console.error("User ID is not available");
+        return;
+      }
+      const response = await fetch(`/api/rate/user/${userId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch ratings.");
+      }
+      const data = await response.json();
+      setRatings(data);
+    } catch (error) {
+      console.error("Error fetching ratings:", error);
+      setError(error.message);
+    }
+  };
     useEffect(() => {
-        const fetchMoviesWithRatings = async () => {
-          try {
-            const userId = user?.id;
-            if (!userId) {
-              console.error("User ID is not available");
-              return;
-            }
-            const response = await fetch(`/api/rate/user/${userId}`);
-            if (!response.ok) {
-              throw new Error("Failed to fetch ratings.");
-            }
-            const data = await response.json();
-            setRatings(data);
-          } catch (error) {
-            console.error("Error fetching ratings:", error);
-            setError(error.message);
-          }
-        };
+
       
         fetchMoviesWithRatings();
       }, [user]);
@@ -87,10 +87,13 @@ const Ratings = () => {
     }
 
     alert("Rating deleted successfully!");
+
     handleCloseDialog();
+    fetchMoviesWithRatings();
     } catch (error) {
     alert("Error deleting rating: " + error.message);
     }
+
   };
 
   return (
