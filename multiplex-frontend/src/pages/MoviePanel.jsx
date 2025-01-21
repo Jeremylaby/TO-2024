@@ -100,6 +100,7 @@ const MovieCreationPanel = () => {
             title,
             director,
             duration,
+            imageUrl,
             genreIds: genres,
         };
         if (!title || !director || !imageUrl || !genres || duration === 0 || genres.length === 0) {
