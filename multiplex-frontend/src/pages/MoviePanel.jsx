@@ -18,8 +18,8 @@ import NavBar from "../components/NavBar.jsx";
 
 const MovieCreationPanel = () => {
     const inputProps = {
-        inputLabel: {style: {color: "white"}},
-        input: {style: {color: "white"}}
+        inputLabel: {style: {color: "gray"}},
+        input: {style: {color: "gray"}}
     }
     const [title, setTitle] = useState("");
     const [director, setDirector] = useState("");
@@ -217,9 +217,9 @@ const MovieCreationPanel = () => {
                 />
 
                 <FormControl fullWidth margin="normal" error={genres.length === 0 && submited}>
-                    <InputLabel sx={{color: "white"}}>Genres</InputLabel>
+                    <InputLabel sx={{color: "gray"}}>Genres</InputLabel>
                     <Select
-                        sx={{color: "white"}}
+                        sx={{color: "gray"}}
                         variant="outlined"
                         label={"Genres"}
                         multiple
@@ -237,8 +237,8 @@ const MovieCreationPanel = () => {
                             PaperProps: {
                                 style: {
                                     maxHeight: 200,
-                                    backgroundColor: "#333",
-                                    color: "white",
+                                    backgroundColor: "#0",
+                                    color: "gray",
                                 },
                             },
                         }}
@@ -246,7 +246,7 @@ const MovieCreationPanel = () => {
                         {availableGenres.map((genre) => (
                             <MenuItem key={genre.id} value={genre.id}>
                                 <Checkbox checked={genres.indexOf(genre.id) > -1}/>
-                                <ListItemText sx={{color: "white"}} primary={genre.name}/>
+                                <ListItemText sx={{color: "gray"}} primary={genre.name}/>
                             </MenuItem>
                         ))}
                     </Select>

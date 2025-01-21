@@ -38,12 +38,9 @@ const darkTheme = createTheme({
 });
 function App() {
   return (
-    <ThemeProvider theme={darkTheme}>
-
     <AuthProvider>
       <Router>
         <Routes>
-
           <Route path={"/"} element={<Home />} />
           <Route path={"/login"} element={<Login />} />
           <Route path={"/signup"} element={<SignUp />} />
@@ -70,7 +67,6 @@ function App() {
         </Routes>
       </Router>
     </AuthProvider>
-            </ThemeProvider>
   );
 }
 
