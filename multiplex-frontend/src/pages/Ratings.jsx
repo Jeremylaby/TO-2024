@@ -31,21 +31,21 @@ const Ratings = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [ratingValue, setRatingValue] = useState(0);
-  
+  const fetchMoviesWithRatings = async () => {
+    try {
+      const response = await fetch("/api/movie/ratings");
+      if (!response.ok) {
+        throw new Error("Failed to fetch movies with ratings.");
+      }
+      const data = await response.json();
+      setMoviesWithRatings(data);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   useEffect(() => {
-    const fetchMoviesWithRatings = async () => {
-      try {
-        const response = await fetch("/api/movie/ratings");
-        if (!response.ok) {
-          throw new Error("Failed to fetch movies with ratings.");
-        }
-        const data = await response.json();
-        setMoviesWithRatings(data);
-      } catch (error) {
-        setError(error.message);
-      }
-    };
+
 
     fetchMoviesWithRatings();
   }, []);
@@ -94,6 +94,7 @@ const Ratings = () => {
 
       alert("Rating submitted successfully!");
       handleCloseDialog();
+      fetchMoviesWithRatings()
 
     } catch (error) {
       alert("Error submitting rating: " + error.message);
@@ -146,7 +147,7 @@ const Ratings = () => {
                           Director: {movie.director || "Unknown"}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          Genres: {movie.genres.map((genre)=>genre.name).join(", ") || "N/A"}
+                          Genres: {movie.genres.join(", ") || "N/A"}
                         </Typography>
                       </>
                     }

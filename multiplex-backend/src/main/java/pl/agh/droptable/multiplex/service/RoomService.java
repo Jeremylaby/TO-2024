@@ -20,4 +20,8 @@ public class RoomService {
     public List<Room> getAllRooms() {return roomRepository.findAll();}
     public Room saveRoom(Room room) {return roomRepository.saveAndFlush(room);}
     public void deleteRoom(Long id) {roomRepository.deleteById(id);}
+    public Optional<Room> findByName(String name) {
+        return roomRepository.findByName(name);
+    }
+
 }

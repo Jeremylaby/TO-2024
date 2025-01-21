@@ -20,6 +20,8 @@ import MyReservations from "./pages/MyReservations.jsx";
 import MoviePanel from "./pages/MoviePanel.jsx";
 import Analytics from "./pages/Analytics.jsx";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import SeansPanel from "./pages/SeansPanel.jsx";
+import RoomPanel from "./pages/RoomPanel.jsx";
 const roles = {
   ADMIN: 2,
   WORKER: 1,
@@ -28,6 +30,9 @@ const roles = {
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
+    background:{
+      paper: "#1b1b1b",
+    }
   },
 });
 function App() {
@@ -37,6 +42,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+
           <Route path={"/"} element={<Home />} />
           <Route path={"/login"} element={<Login />} />
           <Route path={"/signup"} element={<SignUp />} />
@@ -56,7 +62,8 @@ function App() {
             }
             />
           <Route path="/admin/movie-panel" element={<MoviePanel/>}/>
-
+          <Route path={"/admin/seans-panel"} element={<SeansPanel/>}/>
+          <Route path='/admin/room-panel' element={<RoomPanel />} />
           <Route path={"/unauthorized"} element={<Unauthorized />} />
         </Routes>
       </Router>

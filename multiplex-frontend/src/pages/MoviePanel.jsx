@@ -1,14 +1,16 @@
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {
-    TextField,
-    Button,
-    Typography,
+    Alert,
     Box,
+    Button,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    ListItemText,
     MenuItem,
     Select,
-    InputLabel,
-    FormControl,
-    ListItemText, FormHelperText
+    TextField,
+    Typography
 } from "@mui/material";
 
 import Checkbox from "@mui/material/Checkbox";
@@ -27,6 +29,8 @@ const MovieCreationPanel = () => {
     const [submited, setSubmited] = useState(false)
     const [availableGenres, setAvailableGenres] = useState([]);
     const [isValid, setValid] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
     const handleImageChange = (e) => {
         const url = e.target.value;
         setImageUrl(url);
@@ -42,6 +46,7 @@ const MovieCreationPanel = () => {
             headers: {
                 "Content-Type": "application/json",
             },
+            credentials: "include",
             body: JSON.stringify(movieData),
         })
             .then((response) => {
@@ -52,11 +57,14 @@ const MovieCreationPanel = () => {
             })
             .then((result) => {
                 console.log("Movie added successfully:", result);
+                setErrorMessage(null)
+                setSuccessMessage(`Movie" "${movieData.title}" added successfully`)
                 return result;
             })
             .catch((error) => {
                 console.error("Error adding movie:", error);
-                throw error;
+                setErrorMessage(`Error adding movie: ${error}`)
+                setSuccessMessage(null)
             })
 
     };
@@ -85,7 +93,7 @@ const MovieCreationPanel = () => {
             target: {value},
         } = event;
         setGenres(typeof value === "string" ? value.split(",") : value);
-        console.log(genres)
+
     };
     const handleSubmit = async () => {
         const movieData = {
@@ -99,7 +107,7 @@ const MovieCreationPanel = () => {
             return
         }
         console.log("Movie data:", movieData);
-        addMovie(movieData).finally(() => {
+        addMovie(movieData).then(() => {
             setTitle("");
             setDirector("");
             setDuration(0);
@@ -121,6 +129,8 @@ const MovieCreationPanel = () => {
                 <Typography variant="h4" gutterBottom>
                     Movie Panel
                 </Typography>
+                {successMessage && <Alert severity="success">{successMessage}</Alert>}
+                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
                 {imageUrl && isValid && (<img
                         style={{
                             display: "block",
@@ -166,18 +176,31 @@ const MovieCreationPanel = () => {
 
                 <TextField
                     fullWidth
-                    error={duration === 0 && submited}
-                    helperText={duration === 0 && submited ? "Duration grater then zero!" : ""}
+                    error={(duration <= 0 || duration > 300) && submited}
+                    helperText={
+                        duration <= 0 && submited
+                            ? "Duration must be greater than zero!"
+                            : duration > 300 && submited
+                                ? "Duration cannot be more than 300 minutes!"
+                                : ""
+                    }
                     label="Duration (minutes)"
                     type="number"
                     value={duration}
-                    onChange={(e) => setDuration(parseInt(e.target.value))}
-                    margin="normal"
-                    slotProps={
-                        inputProps
+                    onChange={(e) => setDuration(parseInt(e.target.value))
                     }
-
+                    margin="normal"
+                    slotProps={{
+                        ...inputProps,
+                        input: {
+                            ...inputProps.input,
+                            min: 1,
+                            max: 300,
+                            step: 1
+                        }
+                    }}
                 />
+
 
                 <TextField
                     fullWidth

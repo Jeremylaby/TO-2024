@@ -86,6 +86,7 @@ const MyReservations = () => {
     };
 
     const fetchReservations = () => {
+        if (!user) return;
         setError(null);
         setLoading(true);
         return fetch(`/api/reservation/user/${user.id}`, {
@@ -140,7 +141,7 @@ const MyReservations = () => {
 
     useEffect(() => {
         fetchReservations();
-    }, []);
+    }, [user]);
     if (loading) return (<h1>Loading...</h1>)
     if (error) return (<h1>Error: {error}</h1>)
     return (
@@ -153,8 +154,8 @@ const MyReservations = () => {
                 {reservations.length === 0 ? (
                     <Typography variant="body1">No reservations found.</Typography>
                 ) : (
-                    <TableContainer component={Paper}>
-                        <Table>
+                    <TableContainer  component={Paper}>
+                        <Table sx={{bgcolor: "background.paper",}}>
 
                             <TableBody  >
                                 {reservations.map((reservation) => (
