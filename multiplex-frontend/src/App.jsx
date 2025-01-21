@@ -1,6 +1,6 @@
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { AuthProvider } from "./components/AuthProvider.jsx";
+import {Route, BrowserRouter as Router, Routes} from "react-router-dom";
+import {AuthProvider} from "./components/AuthProvider.jsx";
 import Account from "./pages/Account.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
@@ -22,104 +22,116 @@ import MoviePanel from "./pages/MoviePanel.jsx";
 import MyReservations from "./pages/MyReservations.jsx";
 import RoomPanel from "./pages/RoomPanel.jsx";
 import SeansPanel from "./pages/SeansPanel.jsx";
+import {createTheme} from "@mui/material/styles";
+import {ThemeProvider} from "@mui/material";
 
 const roles = {
-  MANAGER: 3,
-  ADMIN: 2,
-  WORKER: 1,
-  USER: 0,
+    MANAGER: 3,
+    ADMIN: 2,
+    WORKER: 1,
+    USER: 0,
 };
+const darkTheme = createTheme({
+    palette: {
+        mode: 'dark',
+        background: {
+            paper: "#1b1b1b",
+        }
+    },
+});
 
 function App() {
-  return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path={"/"} element={<Home />} />
-          <Route path={"/login"} element={<Login />} />
-          <Route path={"/signup"} element={<SignUp />} />
-          <Route
-            path={"/account"}
-            element={
-              <ProtectedRoute reqRoleLvl={roles.USER}>
-                <Account />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path={"/account/reservations"}
-            element={
-              <ProtectedRoute reqRoleLvl={roles.USER}>
-                <MyReservations />
-              </ProtectedRoute>
-            }
-          />
-          <Route path={"/movies"} element={<Movies />} />
-          <Route
-            path={"/admin"}
-            element={
-              <ProtectedRoute reqRoleLvl={roles.ADMIN}>
-                <Admin />
-              </ProtectedRoute>
-            }
-          />
-          <Route path={"/movie-details/:id"} element={<MovieDetails />} />
-          <Route path="/seats/:seansId" element={<SeatSelection />} />
-          <Route path="/payment" element={<Payment />} />
-          <Route
-            path="/analytics"
-            element={
-              <ProtectedRoute reqRoleLvl={roles.MANAGER}>
-                <Analytics />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/ratings" element={<Ratings />} />
-          <Route
-            path="/account/ratings"
-            element={
-              <ProtectedRoute reqRoleLvl={roles.USER}>
-                <MyRatings />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path={"/admin/users"}
-            element={
-              <ProtectedRoute reqRoleLvl={roles.ADMIN}>
-                <UserList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/movie-panel"
-            element={
-              <ProtectedRoute reqRoleLvl={roles.WORKER}>
-                <MoviePanel />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path={"/admin/seans-panel"}
-            element={
-              <ProtectedRoute reqRoleLvl={roles.WORKER}>
-                <SeansPanel />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/room-panel"
-            element={
-              <ProtectedRoute reqRoleLvl={roles.WORKER}>
-                <RoomPanel />
-              </ProtectedRoute>
-            }
-          />
-          <Route path={"/unauthorized"} element={<Unauthorized />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
-  );
+    return (
+        <ThemeProvider theme={darkTheme}>
+            <AuthProvider>
+                <Router>
+                    <Routes>
+                        <Route path={"/"} element={<Home/>}/>
+                        <Route path={"/login"} element={<Login/>}/>
+                        <Route path={"/signup"} element={<SignUp/>}/>
+                        <Route
+                            path={"/account"}
+                            element={
+                                <ProtectedRoute reqRoleLvl={roles.USER}>
+                                    <Account/>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path={"/account/reservations"}
+                            element={
+                                <ProtectedRoute reqRoleLvl={roles.USER}>
+                                    <MyReservations/>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path={"/movies"} element={<Movies/>}/>
+                        <Route
+                            path={"/admin"}
+                            element={
+                                <ProtectedRoute reqRoleLvl={roles.ADMIN}>
+                                    <Admin/>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path={"/movie-details/:id"} element={<MovieDetails/>}/>
+                        <Route path="/seats/:seansId" element={<SeatSelection/>}/>
+                        <Route path="/payment" element={<Payment/>}/>
+                        <Route
+                            path="/analytics"
+                            element={
+                                <ProtectedRoute reqRoleLvl={roles.MANAGER}>
+                                    <Analytics/>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path="/ratings" element={<Ratings/>}/>
+                        <Route
+                            path="/account/ratings"
+                            element={
+                                <ProtectedRoute reqRoleLvl={roles.USER}>
+                                    <MyRatings/>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path={"/admin/users"}
+                            element={
+                                <ProtectedRoute reqRoleLvl={roles.ADMIN}>
+                                    <UserList/>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/admin/movie-panel"
+                            element={
+                                <ProtectedRoute reqRoleLvl={roles.WORKER}>
+                                    <MoviePanel/>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path={"/admin/seans-panel"}
+                            element={
+                                <ProtectedRoute reqRoleLvl={roles.WORKER}>
+                                    <SeansPanel/>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/admin/room-panel"
+                            element={
+                                <ProtectedRoute reqRoleLvl={roles.WORKER}>
+                                    <RoomPanel/>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path={"/unauthorized"} element={<Unauthorized/>}/>
+                    </Routes>
+                </Router>
+            </AuthProvider>
+        </ThemeProvider>
+    );
 }
 
 export default App;
