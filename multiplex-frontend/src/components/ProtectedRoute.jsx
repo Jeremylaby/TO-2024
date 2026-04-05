@@ -2,11 +2,11 @@ import PropTypes from "prop-types";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider.jsx";
 
-const ProtectedRoute = ({ children, allowedRoles }) => {
+const ProtectedRoute = ({ children, reqRoleLvl }) => {
   const { user } = useAuth();
-
-  if (!user || !allowedRoles.includes(user.role)) {
-    return <Navigate to="/unauthorized" />;
+console.log({user, reqRoleLvl})
+  if (!user || ((user.role ?? 0) < reqRoleLvl)) {
+    return <Navigate to="/unauthorized" replace />;
   }
 
   return children;
@@ -15,5 +15,5 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 export default ProtectedRoute;
 ProtectedRoute.propTypes = {
   children: PropTypes.node.isRequired,
-  allowedRoles: PropTypes.arrayOf(PropTypes.number).isRequired,
+  reqRoleLvl: PropTypes.number,
 };

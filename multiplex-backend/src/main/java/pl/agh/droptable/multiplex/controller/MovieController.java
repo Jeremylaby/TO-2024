@@ -1,36 +1,54 @@
 package pl.agh.droptable.multiplex.controller;
 
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.agh.droptable.multiplex.dto.request.CreateMovieRequest;
+import pl.agh.droptable.multiplex.dto.request.GetRecommendationRequest;
 import pl.agh.droptable.multiplex.dto.request.UpdateMovieRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.agh.droptable.multiplex.model.Genre;
 import pl.agh.droptable.multiplex.model.Movie;
+import pl.agh.droptable.multiplex.model.MovieSearchCriteria;
 import pl.agh.droptable.multiplex.repository.GenreRepository;
 import pl.agh.droptable.multiplex.repository.MovieRepository;
 import pl.agh.droptable.multiplex.model.Seans;
+import pl.agh.droptable.multiplex.repository.RateRepository;
+import pl.agh.droptable.multiplex.service.MovieRecommendationService;
+import pl.agh.droptable.multiplex.service.MovieService;
 import pl.agh.droptable.multiplex.service.SeansService;
+
+import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController
-@RequestMapping("/movie")
+@RequestMapping("/api/movie")
 public class MovieController {
     private final MovieRepository movieRepository;
+    private final MovieService movieService;
     private final GenreRepository genreRepository;
     private final SeansService seansService;
+    private final MovieRecommendationService movieRecommendationService;
+    private final RateRepository rateRepository;
 
-    public MovieController(MovieRepository movieRepository, GenreRepository genreRepository, SeansService seansService) {
+    public MovieController(MovieRepository movieRepository, MovieService movieService, GenreRepository genreRepository, SeansService seansService, MovieRecommendationService movieRecommendationService, RateRepository rateRepository) {
         this.movieRepository = movieRepository;
+        this.movieService = movieService;
         this.genreRepository = genreRepository;
         this.seansService = seansService;
+        this.movieRecommendationService = movieRecommendationService;
+        this.rateRepository = rateRepository;
     }
 
     @PostMapping
@@ -70,4 +88,71 @@ public class MovieController {
         return movieRepository.saveAndFlush(movie);
     }
 
+    @PostMapping("/recommendations/rating")
+    public ResponseEntity<?> getMovieRecommendationsByRating(@RequestBody GetRecommendationRequest request) {
+        Timestamp startTimestamp = request.getStartTimestamp();
+        Timestamp endTimestamp = request.getEndTimestamp();
+
+        if (startTimestamp == null || endTimestamp == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "startTimestamp and endTimestamp cannot be null"));
+        }
+
+        List<Movie> recommendedMovies = movieRecommendationService.recommendMoviesByRating(startTimestamp, endTimestamp);
+        return ResponseEntity.ok(recommendedMovies);
+    }
+
+    @PostMapping("/recommendations/sales")
+    public ResponseEntity<?> getMovieRecommendationsBySales(@RequestBody GetRecommendationRequest request) {
+        Timestamp startTimestamp = request.getStartTimestamp();
+        Timestamp endTimestamp = request.getEndTimestamp();
+
+        if (startTimestamp == null || endTimestamp == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "startTimestamp and endTimestamp cannot be null"));
+        }
+
+        List<Movie> recommendedMovies = movieRecommendationService.recommendMoviesBySales(startTimestamp, endTimestamp);
+        return ResponseEntity.ok(recommendedMovies);
+    }
+    @GetMapping("/ratings")
+    public ResponseEntity<List<Map<String, Object>>> getMoviesWithRatings() {
+        List<Movie> movies = movieRepository.findAll();
+        List<Map<String, Object>> moviesWithRatings = movies.stream()
+                .map(movie -> {
+                    Double averageRating = rateRepository.findAverageByMovieId(movie.getId());
+                    List<String> genreNames = movie.getGenres().stream()
+                            .map(genre -> genre.getName())
+                            .toList();
+                    return Map.of(
+                            "movie", Map.of(
+                                    "id", movie.getId(),
+                                    "title", movie.getTitle(),
+                                    "director", movie.getDirector(),
+                                    "imageUrl", movie.getImageUrl(),
+                                    "genres", genreNames
+                            ),
+                            "averageRating", averageRating != null ? averageRating : "N/A"
+                    );
+                })
+                .toList();
+        return ResponseEntity.ok(moviesWithRatings);
+    }
+    @GetMapping("/search")
+    public ResponseEntity<Page<Movie>> searchMovies(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String director,
+            @RequestParam(required = false) String genres,
+            Pageable pageable) {
+
+        List<Long> genreIds = genres != null ?
+                Arrays.stream(genres.split(","))
+                        .map(Long::parseLong)
+                        .collect(Collectors.toList())
+                : null;
+
+        MovieSearchCriteria criteria = new MovieSearchCriteria(title, director, genreIds);
+        Page<Movie> movies = movieService.searchMovies(criteria, pageable);
+        return ResponseEntity.ok(movies);
+    }
 }

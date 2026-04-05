@@ -36,7 +36,7 @@ public class SeansController {
         this.roomService = roomService;
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<?> addSeans(@Valid @RequestBody AddSeansRequest request) {
         Optional<Movie> movieOptional = movieService.getMovieById(request.getMovieId());
         Optional<Room> roomOptional = roomService.getRoom(request.getRoomId());
@@ -55,6 +55,10 @@ public class SeansController {
         LocalDateTime endTime = startTime.plusMinutes(MOVIE_DELAY + movie.getDuration());
         Timestamp start = Timestamp.valueOf(startTime);
         Timestamp end = Timestamp.valueOf(endTime);
+        if (startTime.isBefore(LocalDateTime.now())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Start time must be in the future"));
+        }
         if(!seansService.isRoomAvailable(room.getId(), start,end)){
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("error", "Room is not available int that time range"));

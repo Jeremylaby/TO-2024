@@ -782,16 +782,17 @@ Zwraca listę seansów odbywających się w określonym przedziale czasowym dla 
 **Opis:**  
 Zwraca szczegóły seansu na podstawie jego ID.
 
-**Parametry:**  
+**Parametry:**
 
-| Nazwa parametru | Typ  | Walidacja | Opis                                |
-| --------------- | ---- | --------- | ----------------------------------- |
-| `id`            | Long | Nie puste | Unikalny identyfikator seansu.      |
+| Nazwa parametru | Typ  | Walidacja | Opis                           |
+| --------------- | ---- | --------- | ------------------------------ |
+| `id`            | Long | Nie puste | Unikalny identyfikator seansu. |
 
-**Odpowiedź:**  
+**Odpowiedź:**
 
 - **Status 200 OK:** Szczegóły seansu.  
-  Przykład odpowiedzi:  
+  Przykład odpowiedzi:
+
   ```json
   {
     "id": 1,
@@ -809,13 +810,15 @@ Zwraca szczegóły seansu na podstawie jego ID.
   ```
 
 - **Status 404 Not Found:** Seans o podanym ID nie istnieje.
- 
+
   Przykład odpowiedzi:
+
   ```json
   {
     "error": "There is not such seanse"
   }
   ```
+
 ---
 
 #### **Pobranie listy filmów obecnie granych**
@@ -826,10 +829,10 @@ Zwraca szczegóły seansu na podstawie jego ID.
 **Opis:**  
 Zwraca listę filmów, które są obecnie grane w kinie.
 
-**Odpowiedź:**  
+**Odpowiedź:**
 
 - **Status 200 OK:** Lista filmów obecnie granych.  
-  Przykład odpowiedzi:  
+  Przykład odpowiedzi:
   ```json
   [
     {
@@ -846,6 +849,7 @@ Zwraca listę filmów, które są obecnie grane w kinie.
     }
   ]
   ```
+
 ---
 
 #### **Pobranie listy wolnych miejsc na seans**
@@ -856,16 +860,16 @@ Zwraca listę filmów, które są obecnie grane w kinie.
 **Opis:**  
 Zwraca listę wolnych miejsc na wybrany seans.
 
-**Parametry:**  
+**Parametry:**
 
-| Nazwa parametru | Typ  | Walidacja | Opis                                |
-| --------------- | ---- | --------- | ----------------------------------- |
-| `id`            | Long | Nie puste | Unikalny identyfikator seansu.      |
+| Nazwa parametru | Typ  | Walidacja | Opis                           |
+| --------------- | ---- | --------- | ------------------------------ |
+| `id`            | Long | Nie puste | Unikalny identyfikator seansu. |
 
-**Odpowiedź:**  
+**Odpowiedź:**
 
 - **Status 200 OK:** Lista wolnych miejsc na seans.  
-  Przykład odpowiedzi:  
+  Przykład odpowiedzi:
   ```json
   [
     {
@@ -880,6 +884,7 @@ Zwraca listę wolnych miejsc na wybrany seans.
     }
   ]
   ```
+
 ---
 
 ### `MovieController`
@@ -896,6 +901,12 @@ Dodaje nowy film do systemu.
 
 **Treść żądania (`Request Body`):**
 
+| Nazwa pola | Typ         | Walidacja                 | Opis                            |
+| ---------- | ----------- | ------------------------- | ------------------------------- |
+| `title`    | String      | Nie puste                 | Tytuł filmu.                    |
+| `director` | String      | Nie puste                 | Reżyser filmu.                  |
+| `duration` | Integer     | Wartość dodatnia          | Czas trwania filmu w minutach.  |
+| `genreIds` | List\<Long> | Istniejące identyfikatory | Lista ID przypisanych gatunków. |
 | Nazwa pola | Typ         | Walidacja                 | Opis                            |
 | ---------- | ----------- | ------------------------- | ------------------------------- |
 | `title`    | String      | Nie puste                 | Tytuł filmu.                    |
@@ -931,6 +942,7 @@ Zwraca szczegóły filmu na podstawie jego ID.
 
 - **Status 200 OK:** Film został znaleziony.  
   Przykład odpowiedzi:
+
 
   ```json
   {
@@ -1048,16 +1060,16 @@ Aktualizuje dane istniejącego filmu.
 **Opis:**  
 Zwraca listę wszystkich seansów powiązanych z filmem o określonym ID.
 
-**Parametry:**  
+**Parametry:**
 
-| Nazwa parametru | Typ  | Walidacja | Opis                                |
-| --------------- | ---- | --------- | ----------------------------------- |
-| `id`            | Long | Nie puste | Unikalny identyfikator filmu.       |
+| Nazwa parametru | Typ  | Walidacja | Opis                          |
+| --------------- | ---- | --------- | ----------------------------- |
+| `id`            | Long | Nie puste | Unikalny identyfikator filmu. |
 
-**Odpowiedź:**  
+**Odpowiedź:**
 
 - **Status 200 OK:** Lista seansów dla filmu.  
-  Przykład odpowiedzi:  
+  Przykład odpowiedzi:
   ```json
   [
     {
@@ -1075,6 +1087,141 @@ Zwraca listę wszystkich seansów powiązanych z filmem o określonym ID.
       "roomName": "Room B"
     }
   ]
+  ```
+
+---
+
+#### **Pobranie listy rekomendowanych filmów na podstawie ocen**
+
+**Endpoint:**  
+`POST movie/recommendations/rating`
+
+**Opis:**  
+Zwraca listę filmów, z podanego przedziału czasowego, rekomendowanych na podstawie średnich ocen filmów.
+
+**Treść żądania (`Request Body`):**
+| Nazwa pola | Typ | Walidacja | Opis |
+| ----------------- | ----------- | -------------------------- | --------------------------------------- |
+| `startTimestamp` | Timestamp | Nie może być puste | Czas rozpoczęcia zakresu czasowego. |
+| `endTimestamp` | Timestamp | Nie może być puste | Czas zakończenia zakresu czasowego. |
+
+**Odpowiedź:**
+
+- **Status 200 OK:**  
+  Przykład odpowiedzi:
+
+  ```json
+  [
+    {
+      "id": 1,
+      "title": "Inception",
+      "director": "Christopher Nolan",
+      "duration": 148,
+      "genres": ["Sci-Fi", "Thriller"]
+    },
+    {
+      "id": 2,
+      "title": "Interstellar",
+      "director": "Christopher Nolan",
+      "duration": 169,
+      "genres": ["Sci-Fi", "Drama"]
+    }
+  ]
+  ```
+
+- **Status 400 Bad request:**  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "startTimestamp and endTimestamp cannot be null"
+  }
+  ```
+
+---
+
+#### **Pobranie listy rekomendowanych filmów na podstawie sprzedanych biletów**
+
+**Endpoint:**  
+`POST movie/recommendations/sales`
+
+**Opis:**  
+Zwraca listę filmów, z podanego przedziału czasowego, rekomendowanych na podstawie ilości sprzedanych biletów na film.
+
+**Treść żądania (`Request Body`):**
+| Nazwa pola | Typ | Walidacja | Opis |
+| ----------------- | ----------- | -------------------------- | --------------------------------------- |
+| `startTimestamp` | Timestamp | Nie może być puste | Czas rozpoczęcia zakresu czasowego. |
+| `endTimestamp` | Timestamp | Nie może być puste | Czas zakończenia zakresu czasowego. |
+
+**Odpowiedź:**
+
+- **Status 200 OK:**  
+  Przykład odpowiedzi:
+
+  ```json
+  [
+    {
+      "id": 1,
+      "title": "Inception",
+      "director": "Christopher Nolan",
+      "duration": 148,
+      "genres": ["Sci-Fi", "Thriller"]
+    },
+    {
+      "id": 2,
+      "title": "Interstellar",
+      "director": "Christopher Nolan",
+      "duration": 169,
+      "genres": ["Sci-Fi", "Drama"]
+    }
+  ]
+  ```
+
+- **Status 400 Bad request:**  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "startTimestamp and endTimestamp cannot be null"
+  }
+  ```
+
+---
+
+#### **Pobranie filmów z ocenami**
+
+  **Endpoint:**  
+  `GET /movie/ratings`
+
+  **Opis:**  
+  Pobiera listę wszystkich filmów wraz z ich średnimi ocenami.
+
+  **Odpowiedź:**
+
+  - **Status 200 OK:** Lista filmów z ocenami.  
+    Przykład odpowiedzi:
+    ```json
+    [
+      {
+        "movie": {
+          "id": 1,
+          "title": "Inception",
+          "director": "Christopher Nolan"
+        },
+        "averageRating": 9.5
+      },
+      {
+        "movie": {
+          "id": 2,
+          "title": "Interstellar",
+          "director": "Christopher Nolan"
+        },
+        "averageRating": "N/A"
+      }
+    ]
+    ```
+
+  **Uwagi:**  
+  - Jeśli film nie ma jeszcze ocen, wartość `averageRating` będzie miała wartość `"N/A"`.
 
 ---
 
@@ -1215,11 +1362,54 @@ Usuwa salę kinową z systemu na podstawie ID.
 
 - **Status 404 Not Found:** Sala o podanym ID nie istnieje.  
   Przykład odpowiedzi:
+
   ```json
   {
     "error": "Room not found."
   }
   ```
+
+### `AnalyticsController`
+
+`AnalyticsController` dostarcza analityki związanej z filmami i rezerwacjami w systemie Multiplex. Obecnie umożliwia pobranie informacji o najbardziej dochodowych filmach.
+
+#### **Najbardziej dochodowe filmy**
+
+**Endpoint:**  
+`GET /analytics/movies`
+
+**Opis:**  
+Zwraca listę najbardziej dochodowych filmów w systemie.
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Lista najbardziej dochodowych filmów.  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "movie": {
+        "id": 1,
+        "title": "Title",
+        "director": "Director",
+        "duration": 150,
+        "genres": ["Genre"]
+      },
+      "revenue": 50000
+    },
+    {
+      "title": {
+        "id": 2,
+        "title": "Title 2",
+        "director": "d2",
+        "duration": 130,
+        "genres": ["Genre"]
+      },
+      "revenue": 45000
+    }
+  ]
+  ```
+Domyślnie zwracanych jest 10 najbardziej dochodowych filmów.
 
 ### `SeatController`
 
@@ -1265,6 +1455,120 @@ Dodaje nowe miejsce do istniejącej sali w systemie.
     "error": "Seat already exists."
   }
   ```
+
+### `RateController`
+
+`RateController` zajmuje się zarządzaniem ocenami filmów w systemie Multiplex. Oferuje punkty końcowe do dodawania, usuwania oraz pobierania ocen.
+
+#### **Dodanie oceny**
+
+**Endpoint:**  
+`POST /rate`
+
+**Opis:**  
+Dodaje nową ocenę filmu przez użytkownika.
+
+**Treść żądania (`Request Body`):**
+
+| Nazwa pola | Typ    | Walidacja          | Opis                            |
+| ---------- | -------| ------------------ | ------------------------------- |
+| `userId`   | Long   | Istniejący ID      | ID użytkownika dodającego ocenę.|
+| `movieId`  | Long   | Istniejący ID      | ID filmu, który jest oceniany.  |
+| `rate`     | Integer|                    | Wartość oceny filmu.            |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Ocena została pomyślnie dodana.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "message": "Rate added successfully!"
+  }
+  ```
+- **Status 404 Not Found:** Użytkownik lub film nie został znaleziony.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "message": "User not found"
+  }
+  ```
+  lub
+  ```json
+  {
+    "message": "Movie not found"
+  }
+  ```
+- **Status 400 Bad Request:** Użytkownik już ocenił ten film.  
+  Przykład odpowiedzi:
+  ```json
+  {
+    "error": "You have already rated this movie."
+  }
+  ```
+
+---
+
+#### **Usunięcie oceny**
+
+**Endpoint:**  
+`DELETE /rate/{id}`
+
+**Opis:**  
+Usuwa ocenę o podanym ID.
+
+**Parametry:**  
+
+| Nazwa     | Typ  | Opis              |
+| ----------| -----| ----------------- |
+| `id`      | Long | ID oceny do usunięcia. |
+
+**Odpowiedź:**  
+- **Status 204 No Content:** Ocena została usunięta.
+
+---
+
+#### **Pobranie ocen użytkownika**
+
+**Endpoint:**  
+`GET /rate/user/{id}`
+
+**Opis:**  
+Pobiera wszystkie oceny dodane przez użytkownika o podanym ID.
+
+**Parametry:**  
+
+| Nazwa     | Typ  | Opis                 |
+| ----------| -----| -------------------- |
+| `id`      | Long | ID użytkownika.      |
+
+**Odpowiedź:**
+
+- **Status 200 OK:** Lista ocen użytkownika.  
+  Przykład odpowiedzi:
+  ```json
+  [
+    {
+      "rateId": 1,
+      "movie": {
+        "id": 2,
+        "title": "Inception",
+        "director": "Christopher Nolan"
+      },
+      "rate": 9
+    },
+    {
+      "rateId": 3,
+      "movie": {
+        "id": 5,
+        "title": "Interstellar",
+        "director": "Christopher Nolan"
+      },
+      "rate": 10
+    }
+  ]
+  ```
+
+---
 
 ## Diagram Przepływu Logowania i Rejestracji
 

@@ -103,6 +103,11 @@ public class User implements UserDetails {
         return email;
     }
 
+    public void setName(String name) {
+        this.firstName = name.split(" ")[0];
+        this.lastName = name.split(" ")[1];
+    }
+    
     public int getPermissionLevel() {
         return permissionLevel;
     }

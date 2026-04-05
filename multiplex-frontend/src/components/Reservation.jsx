@@ -1,35 +1,42 @@
 import {Box, Grid2, TableCell, TableRow} from "@mui/material";
 import Typography from "@mui/material/Typography";
+import React from "react";
 
-const Reservation = ({reservation}) => {
+const Reservation = ({reservation, onClick}) => {
     const date = new Date(reservation.start);
 
     // Formatowanie daty
     const formattedDate = new Intl.DateTimeFormat("en-US", {
-        month: "short", // Skrót miesiąca
-        day: "numeric", // Dzień
-        year: "numeric", // Rok
+        month: "short",
+        day: "numeric",
+        year: "numeric",
     }).format(date);
 
     // Formatowanie czasu
     const formattedTime = new Intl.DateTimeFormat("en-US", {
-        hour: "numeric", // Godzina
-        minute: "2-digit", // Minuty
-        hour12: true, // Format 12-godzinny (AM/PM)
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
     }).format(date);
     return (
-        <TableRow>
-            <TableCell>
+        <TableRow onClick={onClick}>
+            <TableCell >
                 <Grid2 container columns={12} spacing={2} sx={{
                     backgroundColor: "#f8f6f1",
+                    color:"black",
                     borderRadius: 2,
                     overflow: "hidden",
+                        transition: "transform 0.3s, box-shadow 0.3s",
+                        "&:hover": {
+                            transform: "scale(1.02)",
+                            boxShadow: 4,
+                        },
                 }}>
                     <Grid2 size={{sm: 3, xs: 12}}>
                         <Box
                             component="img"
-                            src="https://placehold.co/320x400"
-                            alt="Event"
+                            src={reservation.movie.imageUrl || "https://placehold.co/320x400"}
+                            alt={reservation.movie.title}
                             sx={{
                                 height: "100%",
                                 width: "100%",
@@ -45,7 +52,7 @@ const Reservation = ({reservation}) => {
                         justifyContent: "space-between",
                     }}>
                         <Grid2 size={12}>
-                            <Typography variant="subtitle2" color="textSecondary">
+                            <Typography variant="h6" >
                                 MOVIE TICKET
                             </Typography>
                             <Typography variant="h2" sx={{
@@ -55,15 +62,29 @@ const Reservation = ({reservation}) => {
                             }}>
                                 {reservation.movie.title}
                             </Typography>
-                            <Typography variant="subtitle2" color="textSecondary">
-                                Director: {reservation.movie.director}
+                            <Typography variant="subtitle1" sx={{
+                                fontWeight: "bold"}}>
+                                Director: {reservation.movie.director || "Unknown"}
                             </Typography>
-                            <Typography variant="body2" sx={{mt: 1, mb: 2}}>
+                            <Typography variant="subtitle1" >
+                                Genres: {reservation.movie.genres.map((genre)=>genre.name).join(", ") || "N/A"}
+                            </Typography>
+                            <Typography variant="body2" >
                                 123 Alekino St., Krakow
                             </Typography>
-                            <Typography variant="caption" sx={{mt: 1, mb: 2}}>
+                            <Typography variant="caption" >
                                 Owner: {reservation.firstName} {reservation.lastName}
                             </Typography>
+                            <Box sx={{
+                                pt:1,
+                                display:"flex",
+                                flexDirection: {
+                                    xs: "column",
+                                    sm: "row",
+                                },
+                            }}>
+
+                            </Box>
 
                             {!reservation.paid&&(<Typography color={"error"} variant="body1" sx={{mt: 1, mb: 2}}>
                                 Not paid
@@ -125,57 +146,37 @@ const Reservation = ({reservation}) => {
                         {/* Drugi Grid z "Seat", "Row", "Room" */}
                         <Grid2
                             item
-                            size={{xs: 12, sm: 6}}
+                            size={{ xs: 12, sm: 6 }}
                             sx={{
                                 display: "flex",
-                                flexDirection: {xs: "row", sm: "column"},
+                                flexDirection: { xs: "row", sm: "column" },
                                 justifyContent: "space-between",
-                                alignItems:"end"
-
+                                alignItems: "center", // Wyśrodkowanie elementów
                             }}
                         >
-                            {["Seat", "Row", "Room"].map((label, index) => (
-                                <Typography
+                            {[
+                                { label: "Row", value: reservation.row },
+                                { label: "Seat", value: reservation.seatNumber },
+                                { label: "Room", value: reservation.roomName },
+                            ].map((item, index) => (
+                                <Box
                                     key={index}
-                                    variant="body2"
                                     sx={{
-                                        transform: {sm: "rotate(180deg)"},
-                                        writingMode: {sm: "vertical-rl"},
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center",
+                                        transform: { sm: "rotate(180deg)" }, // Obrót całego Boxa
+                                        writingMode: { sm: "vertical-rl" }, // Tekst w trybie pionowym
                                     }}
                                 >
-                                    {label}
-                                </Typography>
+                                    <Typography variant="body2" >
+                                        {item.label}
+                                    </Typography>
+                                    <Typography variant="h5" sx={{ fontWeight: "bold" }}>{item.value}</Typography>
+                                </Box>
                             ))}
                         </Grid2>
 
-                        {/* Trzeci Grid z danymi rezerwacji */}
-                        <Grid2
-                            item
-                            size={{xs: 12, sm: 6}}
-                            sx={{
-                                pt: {sm: 1},
-                                pb: {sm: 1},
-                                pl: {sm: 0, xs: 1},
-                                pr: {sm: 0, xs: 1},
-                                display: "flex",
-                                flexDirection: {xs: "row", sm: "column"},
-                                justifyContent: "space-between",
-                            }}
-                        >
-                            {[reservation.row, reservation.seatNumber, reservation.roomName].map((label, index) => (
-                                <Typography
-                                    key={index}
-                                    variant="h5"
-                                    sx={{
-                                        transform: {sm: "rotate(180deg)"},
-                                        writingMode: {sm: "vertical-rl"},
-                                        fontWeight: "bold",
-                                    }}
-                                >
-                                    {label}
-                                </Typography>
-                            ))}
-                        </Grid2>
                     </Grid2>
                     <Grid2
                         item

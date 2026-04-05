@@ -10,6 +10,7 @@ public record CreateMovieRequest(
         String title,
         String director,
         int duration,
+        String imageUrl,
         List<Long> genreIds
 ) {
     public Movie toMovie(GenreRepository genreRepository) {
@@ -17,6 +18,7 @@ public record CreateMovieRequest(
         movie.setTitle(title);
         movie.setDirector(director);
         movie.setDuration(duration);
+        movie.setImageUrl(imageUrl);
         movie.setGenres(genreIds
                 .stream()
                 .map(genreRepository::findById)
